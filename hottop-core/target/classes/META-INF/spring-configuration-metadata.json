@@ -1,0 +1,11 @@
+{
+  "groups": [
+    {
+      "name": "wx.provider",
+      "type": "com.hottop.core.trading.provider.WxProvider",
+      "sourceType": "com.hottop.core.trading.provider.WxProvider"
+    }
+  ],
+  "properties": [],
+  "hints": []
+}

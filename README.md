@@ -1,2 +1,2 @@
-# F-Buyer
-F-Buyer Dapp project. 
+# hottop-backend
+hottop backend java project (monothetic)
