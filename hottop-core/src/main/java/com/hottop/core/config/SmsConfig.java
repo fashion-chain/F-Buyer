@@ -3,12 +3,14 @@ package com.hottop.core.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 /**
  * 短信发送配置类
  */
 @Component
+@PropertySource("classpath:business.properties")
 public class SmsConfig {
 
     public static String smsCodeExpireTime;

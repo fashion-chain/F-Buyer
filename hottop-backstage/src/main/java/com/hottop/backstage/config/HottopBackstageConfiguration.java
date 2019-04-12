@@ -15,12 +15,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 import java.nio.charset.StandardCharsets;
 
-@Configuration
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class HottopBackstageConfiguration extends WebSecurityConfigurerAdapter {
+//@Configuration
+//@EnableWebSecurity
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class HottopBackstageConfiguration {//extends WebSecurityConfigurerAdapter {
 
-    @Override
+    /*@Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/v2/api-docs",//swagger api json
                 "/swagger-resources/configuration/ui",//用来获取支持的动作
@@ -37,6 +37,7 @@ public class HottopBackstageConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll()
                 .and()
                 .csrf().disable()
-                .httpBasic();
+              .httpBasic();
     }
+     */
 }

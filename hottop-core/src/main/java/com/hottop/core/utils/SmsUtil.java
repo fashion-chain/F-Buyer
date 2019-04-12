@@ -8,8 +8,11 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.exceptions.ServerException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
+import com.hottop.core.security.validate.code.sms.ESmsCodeType;
+import com.hottop.core.security.validate.code.sms.SmsCodeSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.Random;
 
@@ -19,7 +22,7 @@ import java.util.Random;
  */
 public class SmsUtil {
 
-    static Logger logger = LoggerFactory.getLogger(SmsUtil.class);
+    private static Logger logger = LoggerFactory.getLogger(SmsUtil.class);
 
     /** ali 短信服务 accessKeyId 固定值 */
     private static final String accessKeyId = "LTAIXyJXzfVdLwfL";
@@ -136,16 +139,7 @@ public class SmsUtil {
 
     }
 
-    /**
-     * 发送验证码的类型
-     */
-    public enum ESmsCodeType {
-        Login("_login"), Registration("_registration");
-        private String smsCodeType;
 
-        ESmsCodeType(String smsCodeType) {
-            this.smsCodeType = smsCodeType;
-        }
-    }
+
 }
 

@@ -1,45 +1,47 @@
 package com.hottop.backstage.product.controller;
 
-import com.google.gson.reflect.TypeToken;
+
 import com.hottop.backstage.base.controller.BackstageBaseController;
 import com.hottop.backstage.product.service.CommerceBrandService;
 import com.hottop.core.config.BaseConfiguration;
-import com.hottop.core.controller.EntityBaseController;
 import com.hottop.core.model.commerce.CommerceBrand;
+import com.hottop.core.model.zpoj.bean.Image;
 import com.hottop.core.model.zpoj.commerce.bean.CommerceBrandDto;
-import com.hottop.core.request.argument.annotation.Filter;
 import com.hottop.core.request.argument.annotation.Flag;
-import com.hottop.core.request.argument.filter.IFilterResolver;
-import com.hottop.core.request.argument.filter.SimpleFilterResolver;
 import com.hottop.core.request.argument.flag.FlagPageable;
 import com.hottop.core.response.EResponseResult;
 import com.hottop.core.response.Response;
 import com.hottop.core.service.EntityBaseService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/brand")
 @Api("商标管理")
 public class CommerceBrandController extends BackstageBaseController<CommerceBrand> {
 
+    private static Logger logger = LoggerFactory.getLogger(CommerceBrandController.class);
+
     @Autowired
     private CommerceBrandService commerceBrandService;
+
+    @Override
+    public Class<CommerceBrand> clazz() {
+        return CommerceBrand.class;
+    }
+
+    @Override
+    public EntityBaseService service() {
+        return commerceBrandService;
+    }
 
     /**
      * 新增商标
      *
-     * @param jsonStr
-     * @param file
      * @return
      */
     @RequestMapping(path = "/", method = RequestMethod.POST)
@@ -48,12 +50,15 @@ public class CommerceBrandController extends BackstageBaseController<CommerceBra
 //        @ApiImplicitParam(paramType = "create", name="jsonStr", value="商标对象json字符串", required = true, dataType = "String"),
 //        @ApiImplicitParam(paramType = "create", name="file", value="商标Image文件", required = true, dataType = "File")
 //    })
-    public Response post(@RequestParam("jsonStr") String jsonStr,
-                         @RequestParam("file") MultipartFile file) {
-        CommerceBrand brand = BaseConfiguration.generalGson().fromJson(jsonStr, new TypeToken<CommerceBrand>() {
-        }.getType());
+    public Response post(@RequestBody CommerceBrandDto commerceBrandDto) {
+        String avatarStr = commerceBrandDto.getAvatar();
+        Image image = BaseConfiguration.generalGson().fromJson(avatarStr, Image.class);
+        CommerceBrand commerceBrand = new CommerceBrand();
+        BeanUtils.copyProperties(commerceBrandDto, commerceBrand);
+        commerceBrand.setAvatar(image);
+        logger.info("新增商标对象jsonStr:{}", BaseConfiguration.generalGson().toJson(commerceBrand));
         return Response.ResponseBuilder.result(EResponseResult.OK)
-                .data(commerceBrandService.save(brand, file))
+                .data(commerceBrandService.save(commerceBrand))
                 .create();
     }
 
@@ -68,32 +73,19 @@ public class CommerceBrandController extends BackstageBaseController<CommerceBra
     /**
      * 更新商标
      *
-     * @param file    可以为空
-     * @param jsonStr 商标json字符串
      * @return
      */
-    @RequestMapping(path = "/update", method = RequestMethod.POST)
+    @RequestMapping(path = "/{brandId}", method = RequestMethod.PUT)
 //    @ApiOperation("更新商标")
 //    @ApiImplicitParams({
 //            @ApiImplicitParam(paramType = "create", name="jsonStr", value="商标对象json字符串", required = true, dataType = "String"),
 //            @ApiImplicitParam(paramType = "create", name="file", value="商标Image文件", required = false, dataType = "File")
 //    })
-    public Response update(@RequestParam(name = "file", required = false) MultipartFile file,
-                           @RequestParam(name = "jsonStr") String jsonStr) {
-        CommerceBrand brand = BaseConfiguration.generalGson().fromJson(jsonStr, new TypeToken<CommerceBrand>() {
-        }.getType());
+    public Response update(@RequestBody CommerceBrandDto commerceBrandDto, @PathVariable("brandId") Long brandId) {
+        logger.info("brandId:{},类型：{}", brandId, brandId.longValue());
         return Response.ResponseBuilder.result(EResponseResult.OK)
-                .data(commerceBrandService.update(brand, file))
+                .data(commerceBrandService.update(commerceBrandDto, brandId))
                 .create();
     }
 
-    @Override
-    public Class<CommerceBrand> clazz() {
-        return CommerceBrand.class;
-    }
-
-    @Override
-    public EntityBaseService service() {
-        return commerceBrandService;
-    }
 }

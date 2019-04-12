@@ -21,7 +21,7 @@ public class TestMerchantTradeService extends EntityBaseService<MerchantTrade, L
     private TradeFactory tradeFactory;
 
     public void handleTrade(HttpServletRequest request, Trade trade) throws Exception {
-        this.tradeFactory.handle(request, trade);
+        this.tradeFactory.handle(trade);
     }
 
     @Override

@@ -1,20 +1,21 @@
 package com.hottop.core.trading.handler;
 
 import com.hottop.core.model.merchant.enums.ETradeOperate;
+import com.hottop.core.trading.Trade;
 import com.hottop.core.trading.currency.ICurrency;
 import com.hottop.core.trading.exception.TradeHandlerException;
 import com.hottop.core.trading.provider.ITradeProvider;
 
-import javax.servlet.http.HttpServletRequest;
-
 public interface ITradingHandler<T extends ITradeProvider, Y extends ICurrency> {
     T provider();
 
-    void handleOperate(ETradeOperate operate, Y currency) throws TradeHandlerException;
+    Y currency();
 
-    default void payment(Y currency) {}
+    void handleOperate(Trade trade, Trade.TradeItem item) throws TradeHandlerException;
 
-    default void refund(Y currency) {}
+    default void payment(Trade trade, Trade.TradeItem item) {}
 
-    default void withdraw(Y currency) {}
+    default void refund(Trade trade, Trade.TradeItem item) {}
+
+    default void withdraw(Trade trade, Trade.TradeItem item) {}
 }

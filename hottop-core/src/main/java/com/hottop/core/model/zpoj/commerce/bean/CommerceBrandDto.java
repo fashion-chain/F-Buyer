@@ -11,4 +11,6 @@ public class CommerceBrandDto implements Serializable {
     private String country;
 
     private String description;
+
+    private String avatar;
 }

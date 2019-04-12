@@ -5,10 +5,14 @@ import com.hottop.core.model.zpoj.EntityBase;
 import com.hottop.core.request.argument.annotation.Filter;
 import com.hottop.core.request.argument.filter.IFilterResolver;
 import com.hottop.core.response.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 public abstract class ApiBaseController<T extends EntityBase> extends EntityBaseController<T> {
+
+    public Logger logger = LoggerFactory.getLogger(getClass());
 
     @RequestMapping(path = "/views", method = RequestMethod.GET)
     public Response views() throws Exception {

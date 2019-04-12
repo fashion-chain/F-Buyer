@@ -1,7 +1,8 @@
 server:
-  servlet:
-    context-path: /100
   port: 8000
+logging:
+  level:
+    com.hottop: debug
 
 ---
 spring:
@@ -23,3 +24,23 @@ spring:
       max-file-size: 500MB
       max-request-size: 500MB
       enabled: true
+
+ht:
+  security:
+    social:
+      weixin:
+        app-id: wxd99431bbff8305a0
+        app-secret: 60f78681d063590a469f1b297feff3c4
+      filterProcessesUrl: /social
+      connectionTablePrefix: gb_
+
+    browser:
+      signUpUrl: /demo-signUp.html
+    code:
+      sms:
+        #短信验证码的长度
+        length: 6
+        #失效时间
+        expireIn: 60
+        #发送短信的签名
+        currentCompanyName: 北京凡生易美科技有限公司

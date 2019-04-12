@@ -33,6 +33,8 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.*;
+import org.springframework.core.io.support.ResourcePropertySource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
@@ -74,13 +76,30 @@ public class BaseConfiguration implements ApplicationContextAware, WebMvcConfigu
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
-        messageSource.addBasenames("classpath:i18n/base", "classpath:i18n/message");
+        messageSource.addBasenames("classpath:i18n/base");
         return messageSource;
+    }
+
+    @Bean
+    public MutablePropertySources propertySources() throws Exception {
+        MutablePropertySources propertySources = new MutablePropertySources();
+        propertySources.addLast(new ResourcePropertySource("business.properties"));
+        propertySources.addLast(new ResourcePropertySource("trade.properties"));
+        return propertySources;
+    }
+
+    @Bean
+    public PropertyResolver propertyResolver(MutablePropertySources propertySources) {
+        return new PropertySourcesPropertyResolver(propertySources);
     }
 
     @Bean
     public RsaUtil rsaUtil() {
         return new RsaUtil();
+    }
+
+    public static String getProperty(String code) {
+        return ((PropertyResolver) getBean("propertyResolver")).getProperty(code);
     }
 
     public static String getMessage(String code, Object... objs) {
@@ -134,6 +153,10 @@ public class BaseConfiguration implements ApplicationContextAware, WebMvcConfigu
 
     public static Object getBean(String beanName) {
         return context.getBean(beanName);
+    }
+
+    public static <T> T getBean(Class<T> clazz) {
+        return context.getBean(clazz);
     }
 
     public static ApplicationContext getContext() {

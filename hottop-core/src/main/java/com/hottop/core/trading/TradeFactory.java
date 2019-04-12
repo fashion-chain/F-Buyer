@@ -11,24 +11,17 @@ import com.hottop.core.trading.handler.WxCnyHandler;
 import com.hottop.core.trading.provider.ITradeProvider;
 import com.hottop.core.trading.provider.WxProvider;
 
-import java.util.HashMap;
-
 public class TradeFactory {
 
-    private HashMap<ETradeProvider, HashMap<ECurrency, ITradingHandler>> handlerMapper;
-    private HashMap<ETradeProvider, ITradeProvider> providerMapper;
-
     public TradeFactory() {
-        this.handlerMapper = new HashMap<>();
-        this.providerMapper = new HashMap<>();
     }
 
     public void handle(Trade trade) throws Exception {
         for (Trade.TradeItem tradeItem: trade.getTradeItems()) {
-            ITradingHandler handler = getHandler(trade.getTradeProvider(), tradeItem.getCurrency());
-            handler.handleOperate(trade.getTradeOperate(),
-                    getCurrency(tradeItem.getCurrency(),
-                            tradeItem.getAmount()));
+            ITradeProvider provider = getProvider(trade.getTradeProvider());
+            ICurrency currency = getCurrency(tradeItem.getCurrency(), tradeItem.getAmount());
+            ITradingHandler handler = getHandler(provider, currency);
+            handler.handleOperate(trade, tradeItem);
         }
     }
 
@@ -45,39 +38,26 @@ public class TradeFactory {
     }
 
     private ITradeProvider getProvider(ETradeProvider tradeProvider) throws TradeProviderException {
-        if (this.providerMapper.containsKey(tradeProvider)) {
-            return this.providerMapper.get(tradeProvider);
-        }
         ITradeProvider provider = null;
         switch (tradeProvider) {
             case wx:
                 provider = new WxProvider();
-                this.providerMapper.put(tradeProvider, provider);
-                break;
             case ali:
                 break;
             default:
                 throw new TradeProviderException(tradeProvider);
         }
-        return this.providerMapper.get(tradeProvider);
+        return provider;
     }
 
-    private ITradingHandler getHandler(ETradeProvider provider,
-                                      ECurrency currency) throws Exception {
-        if (this.handlerMapper.containsKey(provider) && this.handlerMapper.get(provider).containsKey(currency)) {
-            return this.handlerMapper.get(provider).get(currency);
-        }
+    private ITradingHandler getHandler(ITradeProvider provider,
+                                      ICurrency currency) {
         ITradingHandler handler = null;
-        switch (provider) {
+        switch (provider.provider()) {
             case wx:
-                if (!this.handlerMapper.containsKey(provider)) {
-                    this.handlerMapper.put(provider, new HashMap<>());
-                }
-                switch (currency) {
+                switch (currency.currency()) {
                     case cny:
-                        WxProvider wxProvider = (WxProvider) getProvider(provider);
-                        handler = new WxCnyHandler(wxProvider);
-                        this.handlerMapper.get(provider).put(currency, handler);
+                        handler = new WxCnyHandler((WxProvider) provider, (CnyCurrency) currency);
                         break;
                 }
                 break;
@@ -87,7 +67,7 @@ public class TradeFactory {
                 break;
         }
 
-        return this.handlerMapper.get(provider).get(currency);
+        return handler;
     }
 
 }

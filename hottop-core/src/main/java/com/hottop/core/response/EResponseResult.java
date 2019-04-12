@@ -8,7 +8,8 @@ public enum EResponseResult {
     OK(EResponseCode.OK, ""),
     ERROR_INTERVAL(EResponseCode.ERROR_INTERVAL, "common.message.interval"),
     ERROR_REQUEST_ARGUMENT_PARSE(EResponseCode.ERROR_INTERVAL, "request.argument.json_parse"),
-    ERROR_REQUEST_ARGUMENT_FILTER(EResponseCode.ERROR_INTERVAL, "request.argument.filter");
+    ERROR_REQUEST_ARGUMENT_FILTER(EResponseCode.ERROR_INTERVAL, "request.argument.filter"),
+    ERROR_SMS_SEND(EResponseCode.ERROR_INTERVAL, "sms.error");
 
     private Integer code;
     private String messageCode;
