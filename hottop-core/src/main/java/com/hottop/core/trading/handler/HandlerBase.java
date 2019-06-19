@@ -1,70 +1,57 @@
 package com.hottop.core.trading.handler;
 
+import com.hottop.core.model.merchant.MerchantTrade;
+import com.hottop.core.repository.merchant.MerchantTradeRepository;
+import com.hottop.core.response.Response;
 import com.hottop.core.trading.Trade;
-import com.hottop.core.trading.currency.CnyCurrency;
 import com.hottop.core.trading.currency.ICurrency;
 import com.hottop.core.trading.exception.TradeHandlerException;
 import com.hottop.core.trading.provider.ITradeProvider;
-import org.apache.commons.lang.StringUtils;
+import lombok.Getter;
 
-import java.util.HashMap;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
+@Getter
 public abstract class HandlerBase<T extends ITradeProvider, Y extends ICurrency> implements ITradingHandler<T, Y> {
 
+    private MerchantTradeRepository merchantTradeRepository;
+
+    public HandlerBase(MerchantTradeRepository merchantTradeRepository) {
+        this.merchantTradeRepository = merchantTradeRepository;
+    }
+
     @Override
-    public void handleOperate(Trade trade, Trade.TradeItem item) throws TradeHandlerException {
-        if (!isValidTradeAndItem(trade, item)) {
-            throw new TradeHandlerException(this);
-        }
+    public Response handleOperate(Trade trade) throws Exception {
+        Map<String, String> outParams = initOutParams(trade);
         switch (trade.getTradeOperate()) {
             case payment:
-                payment(trade, item);
-                break;
+                MerchantTrade merchantTrade = generate(trade);
+                return payment(merchantTrade, outParams);
             case refund:
-                refund(trade, item);
+//                refund(merchantTrade, outParams);
                 break;
             case withdraw:
-                withdraw(trade, item);
+//                withdraw(merchantTrade, outParams);
                 break;
             default:
                 throw new TradeHandlerException(this);
         }
+        return null;
     }
 
-    private boolean isValidTradeAndItem(Trade trade, Trade.TradeItem item) {
-        boolean hasNoDuplicatedParameters = true, containsAllRequiredParameters = true, allAreListedParameter = true;
-        HashMap<String, Object> extraParameters = new HashMap<>(trade.getExtraParams());
-        for (Map.Entry<String, Object> entry: item.getExtraParams().entrySet()) {
-            if (extraParameters.containsKey(entry.getKey())) {
-                hasNoDuplicatedParameters = false;
-                break;
-            }
-        }
-        if (hasNoDuplicatedParameters) {
-            for (String requiredParameter: provider().requiredParamKeys()) {
-                if (!extraParameters.containsKey(requiredParameter)) {
-                    containsAllRequiredParameters = false;
-                    break;
-                }
-            }
-            for (Map.Entry<String, Object> entry: extraParameters.entrySet()) {
-                boolean isRequiredParam = false, isOptionalParam = false;
-                for (String requiredParameter: provider().requiredParamKeys()) {
-                    if (StringUtils.equals(entry.getKey(), requiredParameter)) {
-                        isRequiredParam = true;
-                    }
-                }
-                for (String optionalParam: provider().optionalParamKeys()) {
-                    if (StringUtils.equals(entry.getKey(), optionalParam)) {
-                        isOptionalParam = true;
-                    }
-                }
-                if (!isRequiredParam && !isOptionalParam) {
-                    allAreListedParameter = false;
-                }
-            }
-        }
-        return hasNoDuplicatedParameters && containsAllRequiredParameters && allAreListedParameter;
+    public MerchantTrade generate(Trade trade) throws Exception {
+        MerchantTrade merchantTrade = new MerchantTrade();
+        merchantTrade.setTradeProvider(trade.getTradeProvider());
+        merchantTrade.setTradeOperate(trade.getTradeOperate());
+        merchantTrade.setTradeSource(trade.getTradeSource());
+        merchantTrade.setCurrency(trade.getCurrency());
+        merchantTrade.setAmount(trade.getAmount());
+        merchantTrade.setSubject(trade.getSubject());
+        merchantTrade.setDescription(trade.getDescription());
+        merchantTrade.setRemark(trade.getRemark());
+        merchantTrade.setOutTradeNo(trade.getOutTradeNo());
+        merchantTrade.setTradeToken(trade.getTradeToken());
+        return merchantTrade;
     }
 }

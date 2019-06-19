@@ -181,4 +181,11 @@ public class RedisUtil {
         ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
         return zset.rangeByScore(key, scoure, scoure1);
     }
+
+    /**
+     * 给某个key设置过期时间
+     */
+    public void keySetExpireTime (String key, Long expireTime) {
+        redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
+    }
 }

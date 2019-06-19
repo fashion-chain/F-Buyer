@@ -30,10 +30,7 @@ public class UserAddressValidator implements Validator {
         String zipCode = userAddress.getZipCode() == null ? "" : userAddress.getZipCode();
         if(!zipCode.matches(zipCodeRegex))
             errors.rejectValue("zipCode", null, "邮政编码不合法");
-        //用户token不能为空
-        if(StringUtils.isBlank(userAddress.getUserToken())) {
-            errors.rejectValue("userToken", null, "用户token不能为空");
-        }
+
     }
 
 }

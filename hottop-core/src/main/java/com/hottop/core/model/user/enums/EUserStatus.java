@@ -1,7 +1,7 @@
 package com.hottop.core.model.user.enums;
 
 public enum EUserStatus {
-    ok("1"),disable("0") ;
+    ok("0"),disable("1") ;
 
     private String status;
 

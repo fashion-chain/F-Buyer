@@ -3,102 +3,89 @@ package com.hottop.core.trading;
 import com.hottop.core.model.merchant.enums.ECurrency;
 import com.hottop.core.model.merchant.enums.ETradeOperate;
 import com.hottop.core.model.merchant.enums.ETradeProvider;
+import com.hottop.core.model.merchant.enums.ETradeSource;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
+@Getter
 @AllArgsConstructor
 public class Trade {
+    private HttpServletRequest request;
+
     private ETradeProvider tradeProvider;
     private ETradeOperate tradeOperate;
-    private ArrayList<TradeItem> tradeItems;
-    private HashMap<String, Object> extraParams;
+    private ETradeSource tradeSource;
+    private ECurrency currency;
+    private Long amount;
 
-    public ETradeProvider getTradeProvider() {
-        return tradeProvider;
-    }
-
-    public ETradeOperate getTradeOperate() {
-        return tradeOperate;
-    }
-
-    public ArrayList<TradeItem> getTradeItems() {
-        return tradeItems;
-    }
-
-    public HashMap<String, Object> getExtraParams() {
-        return extraParams;
-    }
-
-    @Data
-    public static class TradeItem {
-        private ECurrency currency;
-        private Long amount;
-        private HashMap<String, Object> extraParams;
-
-        private TradeItem(ECurrency currency, Long amount) {
-            this.currency = currency;
-            this.amount = amount;
-            this.extraParams = new HashMap<>();
-        }
-
-        public static TradeItem newItem(ECurrency currency, Long amount) {
-            return new TradeItem(currency, amount);
-        }
-
-        public TradeItem param(String key, Object value) {
-            this.extraParams.put(key, value);
-            return this;
-        }
-
-        public TradeItem params(HashMap<String, Object> extraParams) {
-            this.extraParams.putAll(extraParams);
-            return this;
-        }
-    }
+    private String tradeToken;
+    private String outTradeNo;
+    private String subject;
+    private String description;
+    private String remark;
 
     public static class TradeBuilder {
+        private HttpServletRequest request;
+
         private ETradeProvider provider;
         private ETradeOperate tradeOperate;
-        private ArrayList<TradeItem> tradeItems;
-        private HashMap<String, Object> extraParams;
+        private ETradeSource tradeSource;
+        private ECurrency currency;
+        private Long amount;
 
-        private TradeBuilder(ETradeProvider provider, ETradeOperate tradeOperate) {
+        private String tradeToken;
+        private String outTradeNo;
+        private String subject;
+        private String description;
+        private String remark;
+
+        private TradeBuilder(HttpServletRequest request, ETradeProvider provider, ETradeOperate tradeOperate, ETradeSource tradeSource) {
+            this.request = request;
             this.provider = provider;
             this.tradeOperate = tradeOperate;
-            this.tradeItems = new ArrayList<>();
-            this.extraParams = new HashMap<>();
+            this.tradeSource = tradeSource;
         }
 
-        public static TradeBuilder init(ETradeProvider provider, ETradeOperate tradeOperate) {
-            return new TradeBuilder(provider, tradeOperate);
+        public static TradeBuilder init(HttpServletRequest request, ETradeProvider provider, ETradeOperate tradeOperate, ETradeSource tradeSource) {
+            return new TradeBuilder(request, provider, tradeOperate, tradeSource);
         }
 
-        public TradeBuilder items(List<TradeItem> items) {
-            this.tradeItems.addAll(items);
+        public TradeBuilder currencyAmount(ECurrency currency, Long amount) {
+            this.currency = currency;
+            this.amount = amount;
             return this;
         }
 
-        public TradeBuilder items(TradeItem... items) {
-            return items(Arrays.asList(items));
-        }
-
-        public TradeBuilder param(String key, Object value) {
-            this.extraParams.put(key, value);
+        public TradeBuilder tradeTokenAndOutTradeNo(String tradeToken, String outTradeNo) {
+            this.tradeToken = tradeToken;
+            this.outTradeNo = outTradeNo;
             return this;
         }
 
-        public TradeBuilder params(HashMap<String, Object> extraParams) {
-            this.extraParams.putAll(extraParams);
+        public TradeBuilder info(String subject, String description, String remark) {
+            this.subject = subject;
+            this.description = description;
+            this.remark = remark;
             return this;
         }
 
         public Trade create() {
-            return new Trade(this.provider, this.tradeOperate, this.tradeItems, this.extraParams);
+            return new Trade(
+                    this.request,
+                    this.provider,
+                    this.tradeOperate,
+                    this.tradeSource,
+                    this.currency,
+                    this.amount,
+                    this.tradeToken,
+                    this.outTradeNo,
+                    this.subject,
+                    this.description,
+                    this.remark);
         }
     }
 }

@@ -31,13 +31,13 @@ spring:
     port: 6379
     password:
     timeout: 10000ms
-
----
-redis:
-  #最大空闲数
-  maxIdle: 30
-  maxTotal: 50
-  maxWaitMillis: 2000
-  hostname: 127.0.0.1
-  port: 6379
-  password: root
+#
+#---
+#redis:
+#  #最大空闲数
+#  maxIdle: 30
+#  maxTotal: 50
+#  maxWaitMillis: 2000
+#  hostname: 127.0.0.1
+#  port: 6379
+#  password: root

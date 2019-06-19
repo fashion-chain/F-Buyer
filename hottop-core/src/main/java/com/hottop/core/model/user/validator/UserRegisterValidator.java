@@ -9,7 +9,7 @@ public class UserRegisterValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return clazz.equals(User.class);
+        return User.class.isAssignableFrom(clazz);
     }
 
     @Override

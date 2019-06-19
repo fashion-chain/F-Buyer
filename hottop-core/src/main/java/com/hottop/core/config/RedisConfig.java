@@ -14,6 +14,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
 
+import javax.jws.soap.SOAPBinding;
+
 /**
  * redis 配置类
  */
@@ -61,26 +63,17 @@ public class RedisConfig {
     @Value("${redis.password}")
     private String password;
 
-    /**
-     * 记录用户标识tel 和 用户token的hash
-     */
-    public static String login_telToken_hash;
+    @Value("${redis.key.default.expireTime}")
+    private Long expireTime;
 
-    @Value("${redis.login_telToken_hash}")
-    public void setLogin_telToken_hash(String login_telToken_hash) {
-        RedisConfig.login_telToken_hash = login_telToken_hash;
-    }
+    //用户注册验证码前缀
+    public static String Prefix_user_verifyCode_register = "user:verifyCode:register:";
 
+    //用户登录验证码前缀
+    public static String Prefix_user_verifyCode_login = "user:verifyCode:login:";
 
-    /**
-     * 记录token 和 用户的hash
-     */
-    public static String login_tokenUser_hash;
-
-    @Value("${redis.login_tokenUser_hash}")
-    public void setLogin_tokenUser_hash(String login_tokenUser_hash) {
-        RedisConfig.login_tokenUser_hash = login_tokenUser_hash;
-    }
+    //用户登录验证码前缀
+    public static String Prefix_user_verifyCode_changePassword = "user:verifyCode:changePassword:";
 
     //redis connection factory初始化
     @Bean(name = "RedisConnectionFactory")
@@ -112,5 +105,9 @@ public class RedisConfig {
         redisTemplate.setHashValueSerializer(stringSerializer);
         redisTemplate.setConnectionFactory(initRedisConnectionFactory());
         return redisTemplate;
+    }
+
+    public Long getExpireTime() {
+        return expireTime;
     }
 }

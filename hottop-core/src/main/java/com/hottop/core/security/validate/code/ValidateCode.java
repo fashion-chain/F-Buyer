@@ -15,7 +15,12 @@ public class ValidateCode {
 	private String code;
 	
 	private LocalDateTime expireTime;
-	
+
+	/**
+	 *
+	 * @param code 验证吗
+	 * @param expireIn 有效时间，单位秒
+	 */
 	public ValidateCode(String code, int expireIn){
 		this.code = code;
 		this.expireTime = LocalDateTime.now().plusSeconds(expireIn);

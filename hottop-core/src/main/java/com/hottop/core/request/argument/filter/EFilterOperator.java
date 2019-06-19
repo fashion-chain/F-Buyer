@@ -11,7 +11,10 @@ public enum EFilterOperator {
     notEqual("!:"),
     in("in"),
     notIn("!in"),
-    like("like");
+    like("like"),
+    unlike("unlike"),
+    isnull("isnull"),
+    notnull("notnull");
 
     private String operator;
 
@@ -26,6 +29,10 @@ public enum EFilterOperator {
             }
         }
         throw new IllegalArgumentException(String.format("operator: %s not found", operatorString));
+    }
+
+    public String operator() {
+        return this.operator;
     }
 
     @Override

@@ -6,6 +6,8 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 /**
  * 用户授权信息表
@@ -18,6 +20,7 @@ public class UserAuthorization extends EntityBase {
     private Long userId;
 
     @Column(columnDefinition = "varchar(10) DEFAULT '' COMMENT '用户标识类型，如邮箱、微信'")
+    @Enumerated(EnumType.STRING)
     private EUserIdentityType eUserIdentityType;
 
     @Column(columnDefinition = "varchar(40) DEFAULT '' COMMENT '用户标识值，比如具体邮箱、微信appid'")

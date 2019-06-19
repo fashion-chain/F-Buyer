@@ -14,11 +14,6 @@ public abstract class ApiBaseController<T extends EntityBase> extends EntityBase
 
     public Logger logger = LoggerFactory.getLogger(getClass());
 
-    @RequestMapping(path = "/views", method = RequestMethod.GET)
-    public Response views() throws Exception {
-        return super.views();
-    }
-    
     @RequestMapping(path = "/filter", method = RequestMethod.GET)
     public Response filter(@Filter IFilterResolver<T> filterResolver) throws Exception {
         return super.filter(filterResolver);

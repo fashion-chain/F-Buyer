@@ -32,10 +32,10 @@ public abstract class EntityBaseService<T extends EntityBase, ID extends Seriali
 
     public Page<T> filter(Class<T> clazz, IFilterResolver<T> filterResolver) {
         if (filterResolver.functionResolver(clazz).flagPageable() == null) {
-            return repository().findAll(filterResolver.andSpecification(),
+            return repository().findAll(filterResolver.orSpecification(),
                     FlagPageSizeRequest.DEFAULT);
         } else {
-            return repository().findAll(filterResolver.andSpecification(),
+            return repository().findAll(filterResolver.orSpecification(),
                     filterResolver.functionResolver(clazz).flagPageable());
         }
     }

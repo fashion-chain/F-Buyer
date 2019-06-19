@@ -160,7 +160,17 @@ public class TestBrandController {
     // 测试添加商标
     @Test
     public void testAddCommerceBrand() throws Exception {
-        String imgUploadResultJsonStr = "{\"code\":0,\"data\":{\"url\":\"product/d30407f00e9340709831f9dc93e32100.jpg\",\"uuid\":\"d30407f00e9340709831f9dc93e32100\",\"format\":\"jpg\",\"width\":1024,\"height\":640,\"mediaType\":\"image\"},\"message\":null,\"error\":null,\"flag\":null,\"flagPre\":null,\"success\":true}";
+        String imgUploadResultJsonStr = "{\n" +
+                "    \"code\": 0,\n" +
+                "    \"data\": {\n" +
+                "        \"width\": 1680,\n" +
+                "        \"height\": 1050,\n" +
+                "        \"type\": \"image\",\n" +
+                "        \"url\": \"product/4a367862047d4c6abf5b20a1b8a1e5d4.jpg\",\n" +
+                "        \"uuid\": \"4a367862047d4c6abf5b20a1b8a1e5d4\",\n" +
+                "        \"format\": \"jpg\"\n" +
+                "    }\n" +
+                "}";
         JsonElement resultJson = new JsonParser().parse(imgUploadResultJsonStr);
         JsonObject imgJson = resultJson.getAsJsonObject().getAsJsonObject("data");
 
@@ -170,11 +180,11 @@ public class TestBrandController {
         commerceBrand.setAvatar(imgJson.toString());
         commerceBrand.setName("品牌名1");
         System.out.println("上传json str：" + BaseConfiguration.generalGson().toJson(commerceBrand));
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/brand/").content(BaseConfiguration.generalGson().toJson(commerceBrand))
+        /*MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/brand/").content(BaseConfiguration.generalGson().toJson(commerceBrand))
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-        System.out.println("结果：" + result.getResponse().getContentAsString());
+        System.out.println("结果：" + result.getResponse().getContentAsString());*/
     }
 
     //测试更新商标

@@ -4,17 +4,20 @@ import com.hottop.api.user.service.UserAddressService;
 import com.hottop.api.user.service.UserService;
 import com.hottop.core.config.BaseConfiguration;
 import com.hottop.core.controller.EntityBaseController;
+import com.hottop.core.model.user.User;
 import com.hottop.core.model.user.UserAddress;
 import com.hottop.core.request.argument.validator.user.UserAddressValidator;
 import com.hottop.core.response.EResponseResult;
 import com.hottop.core.response.Response;
 import com.hottop.core.service.EntityBaseService;
 import com.hottop.core.utils.LogUtil;
+import com.hottop.core.utils.ResponseUtil;
 import com.hottop.core.utils.ValidatorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +41,7 @@ public class UserAddressController extends EntityBaseController<UserAddress> {
 
     @Override
     public EntityBaseService service() {
-        return null;
+        return userAddressService;
     }
 
     @Autowired
@@ -71,15 +74,11 @@ public class UserAddressController extends EntityBaseController<UserAddress> {
         HashMap<String, String> map = new HashMap<>();
         if(errors.hasErrors()){
             ValidatorUtil.errorsToMap(map, errors);
-            return Response.ResponseBuilder.result(EResponseResult.ERROR_INTERVAL).data(map).create();
+            String message = BaseConfiguration.generalGson().toJson(map);
+            logger.info("用户地址保存出错：" + message);
+            return ResponseUtil.createErrorResponse(EResponseResult.UserAddress_ERROR_SAVE);
         }
-        try {
-            userAddressService.save(userAddress);
-            return Response.ResponseBuilder.result(EResponseResult.OK).create();
-        } catch (Exception e){
-            LogUtil.error(e.getStackTrace());
-            return Response.ResponseBuilder.result(EResponseResult.ERROR_INTERVAL).data("保存用户地址出错").create();
-        }
+        return userAddressService.saveUserAddress(userAddress);
     }
 
     /**
@@ -88,14 +87,7 @@ public class UserAddressController extends EntityBaseController<UserAddress> {
      * @return
      */
     @RequestMapping(path = "/", method = RequestMethod.PUT)
-    public Response updateUserAddress(@Valid @RequestBody UserAddress userAddress,
-                                      Errors errors)  {
-        HashMap<String, String> map = new HashMap<>();
-        if(errors.hasErrors()){
-            ValidatorUtil.errorsToMap(map, errors);
-            logger.info("出错信息：{}", BaseConfiguration.generalGson().toJson(map));
-            return Response.ResponseBuilder.result(EResponseResult.ERROR_INTERVAL).data(map).create();
-        }
+    public Response updateUserAddress( @RequestBody UserAddress userAddress)  {
         return userAddressService.updateUserAddress(userAddress);
     }
 
@@ -105,14 +97,8 @@ public class UserAddressController extends EntityBaseController<UserAddress> {
      * @return
      */
     @RequestMapping(path = "/{userAddressId}", method = RequestMethod.GET)
-    public Response getUserAddress(@PathVariable(name = "userAddressId") Long userAddressId){
-        try {
-            UserAddress userAddress = userAddressService.findOne(UserAddress.class, userAddressId);
-            userAddress.setUserId(null);
-            return Response.ResponseBuilder.result(EResponseResult.OK).data(userAddress).create();
-        }catch (Exception e){
-            LogUtil.error(e.getStackTrace());
-        }
-        return Response.ResponseBuilder.result(EResponseResult.ERROR_INTERVAL).create();
+    public Response getUserAddress(@PathVariable(name = "userAddressId") Long userAddressId) throws Exception{
+        return super.getOne(userAddressId);
     }
+
 }

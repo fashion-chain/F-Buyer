@@ -43,7 +43,7 @@ public class ConnectionStatusView extends AbstractView {
 			result.put(key, CollectionUtils.isNotEmpty(connections.get(key)));
 		}
 		
-		response.setContentType("application/json;charset=UTF-8");
+		response.setContentType("com.hottop.application/json;charset=UTF-8");
 		response.getWriter().write(objectMapper.writeValueAsString(result));
 	}
 

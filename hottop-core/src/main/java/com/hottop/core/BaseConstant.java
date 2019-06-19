@@ -1,13 +1,23 @@
 package com.hottop.core;
 
 public class BaseConstant {
+    public static class Core {
+
+        public static final String NAMESPACE_BACKSTAGE = "backstage";
+        public static final String NAMESPACE_API = "api";
+
+    }
+
     public static class Common {
+        public static final String DEFAULT_ENCODE = "UTF-8";
+
         public static final String COMMA = ",";
 
+        public static final String COMMON_SPLITTER = "_";
         public static final String FILTER_OPERATION_SPLITTER = "_";
 
-        public static final String FILTER_SPECIFICATION_AND_SPLITTER = ";";
-        public static final String FILTER_SPECIFICATION_OR_SPLITTER = ",";
+        public static final String FILTER_SPECIFICATION_AND_SPLITTER = ",";
+        public static final String FILTER_SPECIFICATION_OR_SPLITTER = ";";
         public static final String FILTER_SPECIFICATION_VALUE_SPLITTER = "'";
 
         public static final String SKU_KEY_SPLITTER = "_";
@@ -31,8 +41,14 @@ public class BaseConstant {
         }
 
         public static class Argument {
+            public static final String COMPONENT_TYPE = "ct";
+            public static final String ACTION_TYPE = "at";
+
             public static final String FLAG = "flag";
             public static final String SORT = "sort";
+            public static final String FIELDS = "fields";
+            public static final String FILTER = "filter";
+            public static final String VIEW = "view";
         }
     }
 
