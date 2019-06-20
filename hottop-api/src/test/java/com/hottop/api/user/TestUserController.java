@@ -166,7 +166,7 @@ public class TestUserController {
 
     @Test
     public void testMessage() {
-        System.out.println(BaseConfiguration.generalGson().toJson(Response.ResponseBuilder.result(EResponseResult.ERROR_SMS_SEND).message().create()));
+        System.out.println(BaseConfiguration.generalGson().toJson(Response.ResponseBuilder.result(EResponseResult.SMS_ERROR_SEND).message().create()));
     }
 
 }

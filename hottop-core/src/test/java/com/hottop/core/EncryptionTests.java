@@ -5,6 +5,7 @@ import com.hottop.core.utils.EncryptUtil;
 import com.hottop.core.utils.RsaUtil;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,8 +26,11 @@ public class EncryptionTests {
 
         String tmpStr = "helloworldhelloworldhelloworld123412";
         System.out.println(tmpStr.getBytes(Charsets.UTF_8).length);
-        String salt = EncryptUtil.generateSalt(30);
-        System.out.println(salt);
+        String salt = EncryptUtil.generateSalt(32);
+
+
+        String key = RandomStringUtils.randomAlphanumeric(32);
+        System.out.println(salt + ":" + key);
     }
 
     @Test

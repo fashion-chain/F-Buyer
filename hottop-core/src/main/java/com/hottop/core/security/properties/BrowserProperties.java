@@ -3,10 +3,13 @@
  */
 package com.hottop.core.security.properties;
 
+import lombok.Data;
+
 /**
  *
  *
  */
+@Data
 public class BrowserProperties {
 	
 	private SessionProperties session = new SessionProperties();
@@ -19,44 +22,10 @@ public class BrowserProperties {
 	
 	private int rememberMeSeconds = 3600;
 
-	public String getLoginPage() {
-		return loginPage;
-	}
+	private String jwtExpireTime = 3600 + "";//默认一个小时过期
 
-	public void setLoginPage(String loginPage) {
-		this.loginPage = loginPage;
-	}
+	private String jwtRefreshTime = 3600*24*7 + "";//默认刷新时间 1周
 
-	public LoginResponseType getLoginType() {
-		return loginType;
-	}
 
-	public void setLoginType(LoginResponseType loginType) {
-		this.loginType = loginType;
-	}
-
-	public int getRememberMeSeconds() {
-		return rememberMeSeconds;
-	}
-
-	public void setRememberMeSeconds(int rememberMeSeconds) {
-		this.rememberMeSeconds = rememberMeSeconds;
-	}
-
-	public String getSignUpUrl() {
-		return signUpUrl;
-	}
-
-	public void setSignUpUrl(String signUpUrl) {
-		this.signUpUrl = signUpUrl;
-	}
-
-	public SessionProperties getSession() {
-		return session;
-	}
-
-	public void setSession(SessionProperties session) {
-		this.session = session;
-	}
 	
 }

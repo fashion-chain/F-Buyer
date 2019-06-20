@@ -1,28 +1,31 @@
 package com.hottop.api.user.controller;
 
 import com.hottop.api.user.service.UserService;
+import com.hottop.api.user.vo.UserDto;
+import com.hottop.core.config.BaseConfiguration;
+import com.hottop.core.config.RedisConfig;
 import com.hottop.core.controller.EntityBaseController;
 import com.hottop.core.model.user.User;
 import com.hottop.core.model.user.validator.UserRegisterValidator;
 import com.hottop.core.response.EResponseResult;
 import com.hottop.core.response.Response;
+import com.hottop.core.security.validate.code.ValidateCode;
 import com.hottop.core.security.validate.code.sms.ESmsCodeType;
+import com.hottop.core.security.validate.code.sms.SmsCodeSender;
 import com.hottop.core.service.EntityBaseService;
 import com.hottop.core.utils.CommonUtil;
 import com.hottop.core.utils.ResponseUtil;
-import com.hottop.core.utils.SmsUtil;
 import com.hottop.core.utils.ValidatorUtil;
-import com.hottop.core.utils.validator.Phone;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.HashMap;
 
 /**
@@ -47,17 +50,11 @@ public class UserController extends EntityBaseController<User> {
         return userService;
     }
 
-    /**
-     * 注册验证器
-     * @param webDataBinder
-     */
-    @InitBinder
-    public void initBinder(WebDataBinder webDataBinder) {
-        webDataBinder.setValidator(new UserRegisterValidator());
-    }
-
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private SmsCodeSender smsCodeSender;
 
     /**
      * 判断用户表中的电话号码是否已存在
@@ -73,32 +70,30 @@ public class UserController extends EntityBaseController<User> {
 
     /**
      * 用户注册
-     *
-     * @param tel
-     * @param password
-     * @param verifyCode
      * @return Response标准回复
      */
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public Response register(@RequestParam String tel,
-                             @RequestParam String password,
-                             @RequestParam("verifyCode") String verifyCode) {
-        if(tel.length() != 11) {
-            return ResponseUtil.createErrorResponse("手机号非法");
+    public Response register(@RequestBody UserDto userDto) {
+        String tel = userDto.getTel();
+        String password = userDto.getPassword();
+        String verifyCode = userDto.getVerifyCode();
+        if (!ValidatorUtil.ValidatePhone(tel)) {
+            return ResponseUtil.createErrorResponse(EResponseResult.USER_ERROR_PHONE);
         }
-        String regex = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$";
-        if(!password.matches(regex)) {
-            return ResponseUtil.createErrorResponse("密码8到16位数字字母组成");
+        if (!ValidatorUtil.ValidatePassword(password)) {
+            return ResponseUtil.createErrorResponse(EResponseResult.USER_ERROR_PASSWORD);
         }
-        //手机号是否已存在
-        if( userService.telExists(tel) ){
-            return ResponseUtil.createErrorResponse("手机号已经注册");
+        if (userService.telExists(tel)) { //手机号码已存在
+            return ResponseUtil.createErrorResponse(EResponseResult.USER_ERROR_REGISTER_HAS_REGISTER);
         }
-        //对比verifyCode 验证码
-        String tmp_verifyCode = (String) redisTemplate.opsForValue().get(tel + ESmsCodeType.Registration);
+        //对比verifyCode 验证码 (String) redisTemplate.opsForValue().get(redis_key);
+        String redis_key = smsCodeSender.getRedisKey(tel, ESmsCodeType.Register);
+        ValidateCode validateCode = BaseConfiguration.generalGson().fromJson((String)redisTemplate.opsForValue().get(redis_key), ValidateCode.class);
+        String redis_validateCode = validateCode == null ? "" : validateCode.getCode();
+        logger.info("redis-repo验证码:{},用户验证码:{},是否相等:{}", redis_validateCode, verifyCode, verifyCode.equalsIgnoreCase(redis_validateCode));
         verifyCode = StringUtils.isNotBlank(verifyCode) ? verifyCode : "";
-        if (!verifyCode.equalsIgnoreCase(tmp_verifyCode)){
-            return ResponseUtil.createErrorResponse("验证码错误");
+        if (StringUtils.isBlank(redis_validateCode) || !verifyCode.equalsIgnoreCase(redis_validateCode)) {
+            return ResponseUtil.createErrorResponse(EResponseResult.SMS_ERROR_VERIFY);
         }
         try {
             User user = new User();
@@ -106,35 +101,40 @@ public class UserController extends EntityBaseController<User> {
             user.setPassword(password);
             userService.save(user);
         } catch (Exception e) {
-            logger.info( "用户注册-保存用户出错：{}", CommonUtil.printStackTraceElements(e.getStackTrace()) );
-            return ResponseUtil.createErrorResponse("用户注册-保存用户出错");
+            logger.info("用户注册-保存用户出错：{}", CommonUtil.printStackTraceElements(e.getStackTrace()));
+            return ResponseUtil.createErrorResponse(EResponseResult.USER_ERROR_REGISTER_FAIL);
         }
-        return ResponseUtil.createOKResponse("用户注册成功");
+        return ResponseUtil.createOKResponse(EResponseResult.USER_SUCCESS_REGISTER);
     }
 
     /**
-     * 用户手机密码登录
+     * 手机密码重置
      *
      * @return
      */
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public Response login(@RequestParam String tel,
-                          @RequestParam String password) {
-        return userService.login(tel, password);
-    }
-
-    /**
-     * 免密登录,短信登录
-     * @return
-     */
-    @RequestMapping(value = "/loginMianMi", method = RequestMethod.POST)
-    public Response loginMianMi(@Valid @RequestBody User user, Errors errors) {
-        HashMap<String,String> map = new HashMap<>();
-        if(errors.hasErrors()){
-            ValidatorUtil.errorsToMap(map, errors);
-            return Response.ResponseBuilder.result(EResponseResult.ERROR_INTERVAL).data(map).create();
+    @RequestMapping(path = "/resetPassword", method = RequestMethod.POST)
+    public Response resetPassword(@RequestBody UserDto userDto) {
+        String tel = userDto.getTel();
+        String password = userDto.getPassword();
+        String verifyCode = userDto.getVerifyCode();
+        if (!ValidatorUtil.ValidatePhone(tel)) {
+            return ResponseUtil.createErrorResponse(EResponseResult.USER_ERROR_PHONE);
         }
-        return null;
+        if (!ValidatorUtil.ValidatePassword(password)) { //手机号不合法
+            return ResponseUtil.createErrorResponse(EResponseResult.USER_ERROR_PASSWORD);
+        }
+        if (!userService.telExists(tel)) { //手机号码不存在
+            return ResponseUtil.createErrorResponse(EResponseResult.USER_ERROR_PHONE_NotExist);
+        }
+        String redis_key = smsCodeSender.getRedisKey(tel, ESmsCodeType.ResetPassword);
+        ValidateCode validateCode = BaseConfiguration.generalGson().fromJson((String)redisTemplate.opsForValue().get(redis_key), ValidateCode.class);
+        String redis_validateCode = validateCode == null ? "" : validateCode.getCode();
+        logger.info("redis-repo验证码:{},用户验证码:{},是否相等:{}", redis_validateCode, verifyCode, verifyCode.equalsIgnoreCase(redis_validateCode));
+        verifyCode = StringUtils.isNotBlank(verifyCode) ? verifyCode : "";
+        if (StringUtils.isBlank(redis_validateCode) || !verifyCode.equalsIgnoreCase(redis_validateCode)) {
+            return ResponseUtil.createErrorResponse(EResponseResult.SMS_ERROR_VERIFY);
+        }
+        return userService.resetPassword(tel, password);
     }
 
 

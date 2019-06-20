@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
  *
  */
 public class ImageCode extends ValidateCode {
+
+	private String image_key;
 	
 	private BufferedImage image; 
 	
@@ -36,4 +38,11 @@ public class ImageCode extends ValidateCode {
 		this.image = image;
 	}
 
+	public String getImage_key() {
+		return image_key;
+	}
+
+	public void setImage_key(String image_key) {
+		this.image_key = image_key;
+	}
 }

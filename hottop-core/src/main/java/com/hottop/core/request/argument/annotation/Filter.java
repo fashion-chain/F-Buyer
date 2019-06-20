@@ -1,5 +1,6 @@
 package com.hottop.core.request.argument.annotation;
 
+import com.hottop.core.BaseConstant;
 import com.hottop.core.model.zpoj.EntityBase;
 
 import java.lang.annotation.*;
@@ -8,7 +9,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Filter {
-    String parameter() default "filter";
+    String parameter() default BaseConstant.Request.Argument.FILTER;
 
 //    Class filter() default void.class;
 }

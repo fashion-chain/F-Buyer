@@ -94,4 +94,17 @@ public class TestUserAddressController {
         System.out.println("结果：" + result.getResponse().getContentAsString());
     }
 
+    public static void main(String[] args) {
+        UserAddress userAddress = new UserAddress();
+        //userAddress.setUserId(1l);
+        userAddress.setZipCode("0100056");
+        userAddress.setProvince("110000");
+        userAddress.setCity("110100");
+        userAddress.setArea("110105");
+        userAddress.setAddress("复兴国际中心");
+        userAddress.setIsDefault("1");
+        String s = new Gson().toJson(userAddress);
+        System.out.println(s);
+    }
+
 }

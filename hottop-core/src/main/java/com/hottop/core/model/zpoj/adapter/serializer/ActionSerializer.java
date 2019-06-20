@@ -1,33 +1,19 @@
 package com.hottop.core.model.zpoj.adapter.serializer;
 
 import com.google.gson.*;
-import com.hottop.core.model.zpoj.cms.IAction;
-import com.hottop.core.model.zpoj.cms.enums.EActionType;
+import com.hottop.core.model.cms.bean.action.ActionBase;
+import com.hottop.core.model.cms.bean.action.EActionType;
 
 import java.lang.reflect.Type;
 
-public class ActionSerializer implements JsonSerializer<IAction>, JsonDeserializer<IAction> {
-
+public class ActionSerializer implements JsonDeserializer<ActionBase>, JsonSerializer<ActionBase> {
     @Override
-    public IAction deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-        switch (EActionType.valueOf(jsonElement.getAsJsonObject().get("actionType").getAsString())) {
-            case page_detail:
-                break;
-            case product_detail:
-                break;
-        }
-        throw new JsonParseException("json deserialize error, unknown actionType");
+    public ActionBase deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+        return jsonDeserializationContext.deserialize(jsonElement, EActionType.getCorrespondingType(EActionType.valueOf(jsonElement.getAsJsonObject().get("actionType").getAsString())));
     }
 
     @Override
-    public JsonElement serialize(IAction action, Type type, JsonSerializationContext jsonSerializationContext) {
-        switch (action.getPath()) {
-            case page_detail:
-                break;
-            case product_detail:
-                break;
-        }
-        throw new JsonParseException("json serialize error, unknown actionType");
+    public JsonElement serialize(ActionBase actionBase, Type type, JsonSerializationContext jsonSerializationContext) {
+        return jsonSerializationContext.serialize(actionBase, EActionType.getCorrespondingType(actionBase.getActionType()));
     }
-
 }

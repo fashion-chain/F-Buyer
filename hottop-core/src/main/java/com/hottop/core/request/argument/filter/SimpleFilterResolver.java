@@ -11,8 +11,8 @@ import java.util.HashMap;
 
 public class SimpleFilterResolver<T extends EntityBase> implements IFilterResolver<T> {
     private SimpleFilterFunctionResolver filterFunctionResolver;
-    private ArrayList<Specification<T>> orSpecifications;
-    private Specification<T> andSpecification;
+    private ArrayList<Specification<T>> andSpecifications;
+    private Specification<T> orSpecification;
 
     private String filterString;
     private HashMap<EFilterFunction, HashMap<String, String>> funcParametersMapper;
@@ -25,29 +25,29 @@ public class SimpleFilterResolver<T extends EntityBase> implements IFilterResolv
     }
 
     @Override
-    public ArrayList<Specification<T>> orSpecifications() {
-        if (this.orSpecifications == null) {
-            this.orSpecifications = new ArrayList<>();
-            for (String parameterAndSpecifications: filterString.split(BaseConstant.Common.FILTER_SPECIFICATION_AND_SPLITTER)) {
-                ArrayList<Specification<T>> orSpecifications = new ArrayList<>();
-                for (String parameterOrSpecification: parameterAndSpecifications.split(BaseConstant.Common.FILTER_SPECIFICATION_OR_SPLITTER)) {
-                    if (StringUtils.isEmpty(parameterOrSpecification)) {
+    public ArrayList<Specification<T>> andSpecifications() {
+        if (this.andSpecifications == null) {
+            this.andSpecifications = new ArrayList<>();
+            for (String parameterOrSpecifications: filterString.split(BaseConstant.Common.FILTER_SPECIFICATION_OR_SPLITTER)) {
+                ArrayList<Specification<T>> andSpecifications = new ArrayList<>();
+                for (String parameterAndSpecification: parameterOrSpecifications.split(BaseConstant.Common.FILTER_SPECIFICATION_AND_SPLITTER)) {
+                    if (StringUtils.isEmpty(parameterAndSpecification)) {
                         continue;
                     }
-                    orSpecifications.add(new FilterParameterSpecification<>(parameterOrSpecification));
+                    andSpecifications.add(new FilterParameterSpecification<>(parameterAndSpecification));
                 }
-                this.orSpecifications.add(FilterParameterSpecification.unionOr(orSpecifications));
+                this.andSpecifications.add(FilterParameterSpecification.unionAnd(andSpecifications));
             }
         }
-        return this.orSpecifications;
+        return this.andSpecifications;
     }
 
     @Override
-    public Specification<T> andSpecification() {
-        if (this.andSpecification == null) {
-            this.andSpecification = FilterParameterSpecification.unionAnd(orSpecifications());
+    public Specification<T> orSpecification() {
+        if (this.orSpecification == null) {
+            this.orSpecification = FilterParameterSpecification.unionOr(andSpecifications());
         }
-        return this.andSpecification;
+        return this.orSpecification;
     }
 
     @Override

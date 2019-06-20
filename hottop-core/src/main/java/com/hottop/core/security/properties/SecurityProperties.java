@@ -18,6 +18,8 @@ public class SecurityProperties {
 	
 	private SocialProperties social = new SocialProperties();
 
+	private ApiProperties api = new ApiProperties();
+
 	public BrowserProperties getBrowser() {
 		return browser;
 	}
@@ -40,6 +42,14 @@ public class SecurityProperties {
 
 	public void setSocial(SocialProperties social) {
 		this.social = social;
+	}
+
+	public ApiProperties getApi() {
+		return api;
+	}
+
+	public void setApi(ApiProperties api) {
+		this.api = api;
 	}
 }
 

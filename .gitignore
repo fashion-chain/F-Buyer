@@ -80,4 +80,7 @@ buildNumber.properties
 
 # common files
 .DS_Store
-hottop-core/src/main/resources/wxpay_cert/
+
+hottop-core/src/main/resources/trade.properties
+hottop-core/src/main/resources/wxpay_cert
+

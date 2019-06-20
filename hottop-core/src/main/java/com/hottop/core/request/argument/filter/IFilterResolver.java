@@ -6,9 +6,9 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.ArrayList;
 
 public interface IFilterResolver<T extends EntityBase> {
-    ArrayList<Specification<T>> orSpecifications();
+    ArrayList<Specification<T>> andSpecifications();
 
-    Specification<T> andSpecification();
+    Specification<T> orSpecification();
 
     IFilterFunctionResolver functionResolver(Class<T> clazz);
 

@@ -1,7 +1,10 @@
 server:
 #  servlet:
 #    context-path: /100
-  port: 80
+  port: 8001
+
+base:
+  host: hottop.com
 
 ---
 spring:
@@ -36,7 +39,11 @@ ht:
 
     browser:
       signUpUrl: /demo-signUp.html
+      jwtExpireTime: 6000 #jwt 失效时间
+      jwtRefreshTime: 12000 #刷新token失效时间,默认一周
     code:
+      image:
+        expireIn: 120
       sms:
         #短信验证码的长度
         length: 6
@@ -47,3 +54,9 @@ ht:
 
 
 ---
+spring:
+  rabbitmq:
+    username: guest
+    password: guest
+    host: localhost
+    port: 5672

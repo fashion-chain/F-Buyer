@@ -5,21 +5,17 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-@NamedEntityGraph(name = "User.roles",attributeNodes = {@NamedAttributeNode("roles")})
+@NamedEntityGraph(name = "User.modules",attributeNodes = {@NamedAttributeNode("modules")})
 @Data
 @Entity
 public class User extends EntityBase implements Serializable {
 
     @Column(columnDefinition = "varchar(100) DEFAULT '' COMMENT '密码'")
     private String password;
-
-    @Column(columnDefinition = "varchar(10) DEFAULT '' COMMENT '用户密码盐'")
-    private String salt;
 
     @Column(columnDefinition = "varchar(50) DEFAULT '' COMMENT '用户名'")
     private String username;
@@ -41,15 +37,14 @@ public class User extends EntityBase implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date loginLastTime;
 
-    @Column(columnDefinition = "bigint DEFAULT NULL COMMENT '创建者id'")
-    private Long creatorId;
+    @ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @JoinTable(name = "gb_user_module", joinColumns = @JoinColumn(name = "gb_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "gb_module_id"))
+    private List<Module> modules;
 
-    @Column(columnDefinition = "bigint DEFAULT NULL COMMENT '修改者id'")
-    private Long modifyId;
-
-    @OneToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
-    @JoinTable(name = "ht_user_role", joinColumns = @JoinColumn(name = "ht_user_id"), inverseJoinColumns = @JoinColumn(name = "ht_role_id"))
-    private List<Role> roles;
+    //用户对应的application id
+    @Column(columnDefinition = "INT(11) COMMENT '后台应用appId'")
+    private Long appId;
 
     /**
      * 空构造器

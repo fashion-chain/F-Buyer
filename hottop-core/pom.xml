@@ -14,6 +14,22 @@
     <artifactId>hottop-core</artifactId>
 
     <dependencies>
+        <!-- 本地微信支付jar 包 core/lib-->
+        <dependency>
+            <groupId>com.github.wxpay</groupId>
+            <artifactId>wxpay</artifactId>
+            <version>3.0.9</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/wxpay-sdk-3.0.9.jar</systemPath>
+        </dependency>
+
+        <!-- 支付宝支付 -->
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>3.7.26.ALL</version>
+        </dependency>
+
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-spring-web</artifactId>
@@ -24,6 +40,12 @@
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>2.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.9.3</version>
         </dependency>
 
         <dependency>
@@ -49,6 +71,9 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
+
+
 
         <!-- im4java 处理图片-->
         <!-- https://mvnrepository.com/artifact/org.im4java/im4java -->
@@ -117,6 +142,20 @@
             <artifactId>jjwt</artifactId>
             <version>0.9.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+
+        <!-- 引入rabbit依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+            <version>1.5.2.RELEASE</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -147,7 +186,6 @@
                     </dependency>
                 </dependencies>
             </plugin>
-
         </plugins>
     </build>
 </project>

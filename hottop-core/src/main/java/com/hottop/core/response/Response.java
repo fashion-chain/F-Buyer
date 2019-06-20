@@ -1,6 +1,8 @@
 package com.hottop.core.response;
 
+import com.hottop.core.config.BaseConfiguration;
 import com.hottop.core.request.argument.flag.FlagPageable;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.data.domain.Page;
 
 public class Response {
@@ -10,14 +12,18 @@ public class Response {
     private String error;
     private String flag;
     private String flagPre;
+    private Long totalElements;
+    private Integer totalPages;
 
-    private Response(Integer code, Object data, String message, String error, String flag, String flagPre) {
+    private Response(Integer code, Object data, String message, String error, String flag, String flagPre, Long totalElements, Integer totalPages) {
         this.code = code;
         this.data = data;
         this.message = message;
         this.error = error;
         this.flag = flag;
         this.flagPre = flagPre;
+        this.totalElements = totalElements;
+        this.totalPages = totalPages;
     }
 
     public boolean isSuccess() {
@@ -48,6 +54,26 @@ public class Response {
         return flagPre;
     }
 
+    public Long getTotalElements() {
+        return totalElements;
+    }
+
+    public void setTotalElements(Long totalElements) {
+        this.totalElements = totalElements;
+    }
+
+    public Integer getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(Integer totalPages) {
+        this.totalPages = totalPages;
+    }
+
+    public void setData(Object data) {
+        this.data = data;
+    }
+
     public static class ResponseBuilder {
         private EResponseResult result;
         private Object data;
@@ -55,6 +81,8 @@ public class Response {
         private String error;
         private String flag;
         private String flagPre;
+        private Integer totalPages;
+        private Long totalElements;
 
         public static ResponseBuilder result(EResponseResult result) {
             ResponseBuilder builder = new ResponseBuilder();
@@ -64,7 +92,14 @@ public class Response {
 
         public ResponseBuilder pageableSortable(Page<?> page, FlagPageable flagPageable) {
             this.flagPre(flagPageable.hasPrevious() ? flagPageable.getFlagResolver().previous() : null);
-            this.flag(page.getNumberOfElements() >= flagPageable.getFlagResolver().getSize() ? flagPageable.getFlagResolver().next() : null);
+            this.flag(page.getTotalElements() > flagPageable.getFlagResolver().getSize()*(flagPageable.getFlagResolver().getPage()+1) ? flagPageable.getFlagResolver().next() : null);
+            return this;
+        }
+
+        public ResponseBuilder pageableSortableWithTotalPages(Page<?> page, FlagPageable flagPageable) {
+            pageableSortable(page, flagPageable);
+            this.totalPages = page.getTotalPages();
+            this.totalElements = page.getTotalElements();
             return this;
         }
 
@@ -103,12 +138,19 @@ public class Response {
         }
 
         public Response create() {
+            if (StringUtils.isEmpty(message)) {
+                if (!StringUtils.isEmpty(result.getMessageCode())) {
+                    this.message = BaseConfiguration.getMessage(result.getMessageCode());
+                }
+            }
             return new Response(this.result.getCode(),
                     this.data,
                     this.message,
                     this.error,
                     this.flag,
-                    this.flagPre);
+                    this.flagPre,
+                    this.totalElements,
+                    this.totalPages);
         }
     }
 }

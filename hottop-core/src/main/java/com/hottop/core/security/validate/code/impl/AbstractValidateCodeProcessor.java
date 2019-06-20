@@ -4,6 +4,7 @@
 package com.hottop.core.security.validate.code.impl;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import com.hottop.core.config.BaseConfiguration;
@@ -13,7 +14,9 @@ import com.hottop.core.security.properties.SecurityConstants;
 import com.hottop.core.security.properties.SecurityProperties;
 import com.hottop.core.security.validate.code.*;
 import com.hottop.core.security.validate.code.image.ImageCode;
+import com.hottop.core.security.validate.code.sms.AliSmsCodeSender;
 import com.hottop.core.security.validate.code.sms.ESmsCodeType;
+import com.hottop.core.security.validate.code.sms.SmsCodeSender;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +35,7 @@ import org.springframework.web.context.request.ServletWebRequest;
  */
 public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> implements ValidateCodeProcessor {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final static Logger logger = LoggerFactory.getLogger(AbstractValidateCodeProcessor.class);
 
 	/**
 	 * 操作session的工具类
@@ -42,11 +45,17 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
 	@Autowired
 	private RedisTemplate redisTemplate;
 
+	@Autowired
+	private SecurityProperties securityProperties;
+
 	/**
 	 * 收集系统中所有的 {@link ValidateCodeGenerator} 接口的实现。
 	 */
 	@Autowired
 	private Map<String, ValidateCodeGenerator> validateCodeGenerators;
+
+	@Autowired
+	private AliSmsCodeSender aliSmsCodeSender;
 
 	/*
 	 * (non-Javadoc)
@@ -77,7 +86,9 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
 		if (validateCodeGenerator == null) {
 			throw new ValidateCodeException("验证码生成器" + generatorName + "不存在");
 		}
-		return (C) validateCodeGenerator.generate(request);
+		final C generate = (C) validateCodeGenerator.generate(request);
+		logger.info("生成验证码：------ {} --------,验证码类型：{}", generate.getCode(), type);
+		return generate;
 	}
 
 	/**
@@ -88,25 +99,32 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
 	 */
 	private void save(ServletWebRequest request, C validateCode) {
 		if (validateCode instanceof ImageCode ) {
-			logger.info("保存图片验证码到session：{}", validateCode.getCode());
-			sessionStrategy.setAttribute(request, getSessionKey(request), validateCode);
+			String imageKey = getImageKey(request);
+			redisTemplate.opsForValue().set(imageKey, BaseConfiguration.generalGson().toJson(
+					new ValidateCode(validateCode.getCode(),validateCode.getExpireTime())));
+			redisTemplate.expire(imageKey, securityProperties.getCode().getImage().getExpireIn(), TimeUnit.SECONDS);
+			logger.info("保存图片验证码到redis,imageCode:{}, key:{}, expireTime:{}秒", validateCode.getCode(), imageKey, securityProperties.getCode().getImage().getExpireIn());
+			((ImageCode) validateCode).setImage_key(imageKey);
 		}else{
 			String redis_key = getRedisKey(request);
-			logger.info("保存短信验证码：{},{}", BaseConfiguration.generalGson().toJson(validateCode), validateCode.getCode());
 			//设置过期时间
 			redisTemplate.opsForValue().set(redis_key, BaseConfiguration.generalGson().toJson(validateCode));
 			redisTemplate.expire(redis_key, Long.parseLong(SmsConfig.smsCodeExpireTime), TimeUnit.SECONDS);
+			logger.info("保存短信验证码到redis中：smsCode:{}, key:{}, smsExpireTime", validateCode.getCode(), redis_key, SmsConfig.smsCodeExpireTime);
 		}
 	}
 
 	/**
-	 * 构建验证码放入session时的key
+	 * 构建图片验证码 放入redis 时的key
 	 * 
 	 * @param request
 	 * @return
 	 */
-	private String getSessionKey(ServletWebRequest request) {
-		return SESSION_KEY_PREFIX + getValidateCodeType(request).toString().toUpperCase();
+	private String getImageKey(ServletWebRequest request) {
+		if (StringUtils.isNotBlank(request.getHeader("image_key"))) {
+			return request.getHeader("image_key");
+		}
+		return IMAGE_CODE_KEY_PREFIX + UUID.randomUUID().toString().replace("-", "").toString();
 	}
 
 	/**
@@ -114,9 +132,9 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
 	 * @param request
 	 * @return
 	 */
-	private String getRedisKey(ServletWebRequest request) {
+	public String getRedisKey(ServletWebRequest request) {
 		String tel = request.getParameter(SecurityConstants.DEFAULT_PARAMETER_NAME_MOBILE);
-		String redis_key = tel + ESmsCodeType.Login;
+		String redis_key = aliSmsCodeSender.getRedisKey(tel, ESmsCodeType.Login);
 		logger.info("构建短信登录 放入redis时的key:{},手机号：{}", redis_key, tel);
 		return redis_key;
 	}
@@ -148,13 +166,14 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
 		ValidateCodeType processorType = getValidateCodeType(request);
 		String redisKey = null;
 		ValidateCode code = null;
-		if(processorType.name().equals(ValidateCodeType.SMSLOGIN.name())){
+		if(processorType.name().equals(ValidateCodeType.SMSLOGIN.name())){ //短信验证码
 			redisKey = getRedisKey(request);
 			code = BaseConfiguration.generalGson().fromJson((String)redisTemplate.opsForValue().get(redisKey), ValidateCode.class);
-		}else if(processorType.name().equals(ValidateCodeType.IMAGE.name())){
-			redisKey = getSessionKey(request);
-			code = (C) sessionStrategy.getAttribute(request, getSessionKey(request));
+		}else if(processorType.name().equals(ValidateCodeType.IMAGE.name())){ //图片验证码
+			redisKey = getImageKey(request);
+			code = BaseConfiguration.generalGson().fromJson((String)redisTemplate.opsForValue().get(redisKey), ValidateCode.class);
 		}
+		logger.info("从redis数据库中获取的验证码：{}", (String)redisTemplate.opsForValue().get(redisKey));
 
 		String codeInRequest;
 		try {

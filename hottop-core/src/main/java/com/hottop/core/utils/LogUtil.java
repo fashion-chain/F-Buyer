@@ -14,6 +14,11 @@ public class LogUtil {
         logger.error(error);
     }
 
+    public static void error(String error, StackTraceElement[] elements) {
+        logger.error(error);
+        logger.error(CommonUtil.printStackTraceElements(elements));
+    }
+
     public static void error(StackTraceElement[] elements) {
         logger.error(CommonUtil.printStackTraceElements(elements));
     }

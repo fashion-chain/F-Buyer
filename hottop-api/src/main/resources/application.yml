@@ -36,6 +36,9 @@ ht:
 
     browser:
       signUpUrl: /demo-signUp.html
+      #单位是秒
+      jwtExpireTime: 6000
+      jwtRefreshTime: 12000
     code:
       sms:
         #短信验证码的长度
@@ -44,3 +47,11 @@ ht:
         expireIn: 60
         #发送短信的签名
         currentCompanyName: 北京凡生易美科技有限公司
+        #是否启动aliSms
+        isAliSmsOpen: false
+
+---
+ht:
+  snowflake:
+    workerId: 0
+    datacenterId: 0

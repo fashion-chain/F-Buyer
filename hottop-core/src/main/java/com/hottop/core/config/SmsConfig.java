@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 @PropertySource("classpath:business.properties")
 public class SmsConfig {
 
+    /**
+     * 验证码失效时间5分钟
+     */
     public static String smsCodeExpireTime;
 
     /**
@@ -24,7 +27,19 @@ public class SmsConfig {
         SmsConfig.smsCodeExpireTime = smsCodeExpireTime;
     }
 
+    public static String smsCodeLoginExpireTime;
+
+    @Value("${sms.code.login.expire.time}")
+    public void setSmsCodeLoginExpireTime(String smsCodeLoginExpireTime) {
+        SmsConfig.smsCodeLoginExpireTime = smsCodeLoginExpireTime;
+    }
+
     public SmsConfig() {
     }
 
+    public static String smsCodeSendInterval;
+    @Value("${sms.code.send.interval.time}")
+    public void setSmsCodeSendInterval(String smsCodeSendInterval) {
+        SmsConfig.smsCodeSendInterval = smsCodeSendInterval;
+    }
 }

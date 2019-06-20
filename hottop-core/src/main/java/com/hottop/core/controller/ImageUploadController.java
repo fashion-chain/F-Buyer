@@ -8,6 +8,7 @@ import com.hottop.core.repository.fileUpload.UploadFileRepository;
 import com.hottop.core.response.EResponseResult;
 import com.hottop.core.response.Response;
 import com.hottop.core.utils.CommonUtil;
+import com.hottop.core.utils.ResponseUtil;
 import com.hottop.core.utils.alioss.AliOssClient;
 import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.slf4j.Logger;
@@ -43,18 +44,21 @@ public class ImageUploadController {
     public Response imageUpload(@RequestParam(name = "file") MultipartFile file,
                                 @RequestParam(name = "to") String to) {
         AliOssClient.ECustomPath[] values = AliOssClient.ECustomPath.values();
+        AliOssClient.ECustomPath path = null;
         boolean legalTo = false;
         for (AliOssClient.ECustomPath value : values) {
             if (value.getCustomPath().equalsIgnoreCase(to)) {
                 legalTo = true;
+                path = value;
                 break;
             }
         }
-        if(!legalTo) return Response.ResponseBuilder.result(EResponseResult.ERROR_INTERVAL).data("文件上传位置非法").create();
+        if(!legalTo) return ResponseUtil.createErrorResponse(EResponseResult.UploadFile_ERROR_PATH);
         try {
-            Response response = AliOssClient.saveImg(file, AliOssClient.ECustomPath.valueOf(to), null);
+            Response response = AliOssClient.saveImg(file, path, null);
             if (response.getCode().equals(EResponseResult.OK.getCode())) {
                 Image image = (Image) response.getData();
+                image.setUrl(CommonUtil.imageSetUrlPrefix(image.getUrl()));
                 //image 信息保存到数据库
                 UploadFile uploadFile = new UploadFile();
                 uploadFile.setFileJson(BaseConfiguration.generalGson().toJson(image));

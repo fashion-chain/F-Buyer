@@ -20,9 +20,6 @@ public class UserAddress extends EntityBase {
     @Column(columnDefinition = "bigint DEFAULT NULL COMMENT '用户实体id'")
     private Long userId;
 
-    @Transient
-    private String userToken;
-
     @Column(columnDefinition = "varchar(10) COMMENT '邮编'")
     private String zipCode;
 

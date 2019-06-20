@@ -1,23 +1,45 @@
 package com.hottop.core.trading.provider;
 
+import com.github.wxpay.sdk.IWXPayDomain;
+import com.github.wxpay.sdk.WXPayConfig;
+import com.github.wxpay.sdk.WXPayConstants;
 import com.hottop.core.config.BaseConfiguration;
 import com.hottop.core.model.merchant.enums.ETradeProvider;
-import com.hottop.core.utils.EncryptUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
-public class WxProvider implements ITradeProvider {
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
+
+public class WxProvider extends ProviderBase implements WXPayConfig {
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static String appId = BaseConfiguration.getProperty("wx.provider.appId");
     private static String mchId = BaseConfiguration.getProperty("wx.provider.mchId");
+    private static String paySignKey = BaseConfiguration.getProperty("wx.provider.paySignKey");
+    private static InputStream certInputStream;
 
-    private static String[] requiredParams = new String[] {
-            "appid", "mch_id", "nonce_str", "sign", "body", "out_trade_no", "total_fee", "spbill_create_ip",
-            "notify_url", "trade_type"
-    };
+    public WxProvider(ResourceLoader resourceLoader) {
+        try {
+            if (certInputStream == null) {
+                Resource resource = resourceLoader.getResource("classpath:wxpay_cert/apiclient_cert.p12");
+                certInputStream = resource.getInputStream();
+            }
+        } catch (IOException ex) {
+            logger.error(String.format("error loading wxpay_cert: %s", ex.getMessage()));
+        }
+    }
 
-    private static String[] optionalParams = new String[] {
-            "device_info", "sign_type", "detail", "attach", "fee_type", "time_start", "time_expire",
-            "goods_tag", "product_id", "limit_pay", "openid", "receipt", "scene_info"
-    };
+    @Override
+    public String getUri() {
+        return "/trade/wxNotify";
+    }
 
     @Override
     public ETradeProvider provider() {
@@ -25,36 +47,40 @@ public class WxProvider implements ITradeProvider {
     }
 
     @Override
-    public String[] requiredParamKeys() {
-        return requiredParams;
-    }
-
-    @Override
-    public String[] optionalParamKeys() {
-        return optionalParams;
-    }
-
-    public String nonceStr() {
-        return EncryptUtil.randomAlphaNumeric(32);
-    }
-
-    public String outTradeNo() {
-        return null;
-    }
-
-    public String body() {
-        return null;
-    }
-
-    public String sign() {
-        return null;
-    }
-
-    public String appId() {
+    public String getAppID() {
         return appId;
     }
 
-    public String mchId() {
+    @Override
+    public String getMchID() {
         return mchId;
+    }
+
+    @Override
+    public String getKey() {
+        return paySignKey;
+    }
+
+    @Override
+    public InputStream getCertStream() {
+        return certInputStream;
+    }
+
+    @Override
+    public IWXPayDomain getWXPayDomain() {
+        return new IWXPayDomain() {
+            @Override
+            public void report(String s, long l, Exception e) {
+                logger.info(String.format("domain: %s, elapsedTime: %s", s, l));
+                if (e != null) {
+                    logger.error(String.format("exception occurred: %s", e.getMessage()));
+                }
+            }
+
+            @Override
+            public DomainInfo getDomain(WXPayConfig wxPayConfig) {
+                return new DomainInfo(WXPayConstants.DOMAIN_API, true);
+            }
+        };
     }
 }

@@ -4,8 +4,12 @@ import com.hottop.core.model.commerce.CommerceBrand;
 import com.hottop.core.repository.EntityBaseRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public interface CommerceBrandRepository extends EntityBaseRepository<CommerceBrand, Long> {
@@ -13,4 +17,13 @@ public interface CommerceBrandRepository extends EntityBaseRepository<CommerceBr
     CommerceBrand findByName(String name);
 
     Page<CommerceBrand> findAllByCountry(String country, Pageable pageable);
+
+    List<CommerceBrand> findByCategoryIdIn(ArrayList<Long> ids);
+
+    List<CommerceBrand> findByCategoryId(Long id);
+
+    @Query(
+            value = "select DISTINCT country from gb_commerce_brand", nativeQuery = true
+    )
+    List<String> findAllCountry();
 }
