@@ -60,6 +60,7 @@
             <scope>test</scope>
         </dependency>
 
+<<<<<<< HEAD
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-redis</artifactId>
@@ -90,5 +91,8 @@
             <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
             <version>1.1.0</version>
         </dependency>
+=======
+
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
     </dependencies>
 </project>

@@ -20,10 +20,13 @@ public class MerchantTradeService extends EntityBaseService<MerchantTrade, Long>
     @Autowired
     private TradeFactory tradeFactory;
 
+<<<<<<< HEAD
     public void handleTrade(HttpServletRequest request, Trade trade) throws Exception {
         this.tradeFactory.handle(request, trade);
     }
 
+=======
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
     @Override
     public EntityBaseRepository<MerchantTrade, Long> repository() {
         return this.merchantTradeRepository;

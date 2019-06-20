@@ -1,13 +1,24 @@
 package com.hottop.backstage.product.service;
 
+<<<<<<< HEAD
 import com.hottop.core.model.commerce.CommerceBrand;
 import com.hottop.core.model.zpoj.bean.Image;
+=======
+import com.hottop.core.config.BaseConfiguration;
+import com.hottop.core.model.commerce.CommerceBrand;
+import com.hottop.core.model.zpoj.bean.Image;
+import com.hottop.core.model.zpoj.commerce.bean.CommerceBrandDto;
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 import com.hottop.core.repository.EntityBaseRepository;
 import com.hottop.core.repository.commerce.CommerceBrandRepository;
 import com.hottop.core.response.EResponseResult;
 import com.hottop.core.response.Response;
 import com.hottop.core.service.EntityBaseService;
 import com.hottop.core.utils.CommonUtil;
+<<<<<<< HEAD
+=======
+import com.hottop.core.utils.LogUtil;
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 import com.hottop.core.utils.alioss.AliOssClient;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -19,6 +30,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+<<<<<<< HEAD
+=======
+import java.util.Optional;
+
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 @Service
 public class CommerceBrandService extends EntityBaseService<CommerceBrand, Long> {
 
@@ -41,7 +57,11 @@ public class CommerceBrandService extends EntityBaseService<CommerceBrand, Long>
         return commerceBrandRepository.findAllByCountry(country, pageable);
     }
 
+<<<<<<< HEAD
     @Transactional
+=======
+/*    @Transactional
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
     public CommerceBrand save(CommerceBrand brand, MultipartFile file) {
         try {
             Response response = AliOssClient.saveImg(file, AliOssClient.ECustomPath.PRODUCT, null);
@@ -53,6 +73,7 @@ public class CommerceBrandService extends EntityBaseService<CommerceBrand, Long>
             logger.info("新增商标图片出错：%s", CommonUtil.printStackTraceElements(e.getStackTrace()));
         }
         return save(brand);
+<<<<<<< HEAD
     }
 
     /**
@@ -62,6 +83,15 @@ public class CommerceBrandService extends EntityBaseService<CommerceBrand, Long>
      * @param file
      * @return
      */
+=======
+    }*/
+
+/*    *//**
+     * 更新商标信息
+     *
+     * @return
+     *//*
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
     @Transactional
     public CommerceBrand update(CommerceBrand brand, MultipartFile file) {
         CommerceBrand old = commerceBrandRepository.findByName(brand.getName());
@@ -82,6 +112,46 @@ public class CommerceBrandService extends EntityBaseService<CommerceBrand, Long>
             logger.info("更新商标图片出错：%s", CommonUtil.printStackTraceElements(e.getStackTrace()));
         }
         return update(old);
+<<<<<<< HEAD
     }
 
+=======
+    }*/
+
+    @Transactional
+    public Response update(CommerceBrandDto commerceBrandDto, Long id) {
+        try {
+            Optional<CommerceBrand> commerceBrand_optional = commerceBrandRepository.findById(id);
+            if(!commerceBrand_optional.isPresent()) throw new Exception("更新商标出错-id不存在");
+            CommerceBrand commerceBrand = commerceBrand_optional.get();
+            transferIfFieldNotNull(commerceBrandDto, commerceBrand);
+            update(commerceBrand);
+            return Response.ResponseBuilder.result(EResponseResult.OK).create();
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtil.error(e.getStackTrace());
+            logger.info("更新商标出错");
+        }
+        return Response.ResponseBuilder.result(EResponseResult.ERROR_INTERVAL).create();
+    }
+
+    private void transferIfFieldNotNull(CommerceBrandDto commerceBrandDto, CommerceBrand commerceBrand) {
+        if(StringUtils.isNotBlank(commerceBrandDto.getAvatar())) {
+            String avatar = commerceBrandDto.getAvatar();
+            Image image = BaseConfiguration.generalGson().fromJson(avatar, Image.class);
+            commerceBrand.setAvatar(image);
+        }
+        if(StringUtils.isNotBlank(commerceBrandDto.getCountry())) {
+            commerceBrand.setCountry(commerceBrandDto.getCountry());
+        }
+        if(StringUtils.isNotBlank(commerceBrandDto.getDescription())) {
+            commerceBrand.setDescription(commerceBrandDto.getDescription());
+        }
+        if(StringUtils.isNotBlank(commerceBrandDto.getName())) {
+            commerceBrand.setName(commerceBrandDto.getName());
+        }
+    }
+
+
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 }

@@ -3,6 +3,12 @@ server:
 #    context-path: /100
   port: 8001
 
+<<<<<<< HEAD
+=======
+base:
+  host: hottop.com
+
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 ---
 spring:
   profiles:
@@ -23,3 +29,40 @@ spring:
       max-file-size: 500MB
       max-request-size: 500MB
       enabled: true
+<<<<<<< HEAD
+=======
+
+---
+ht:
+  security:
+    social:
+      weixin:
+        app-id: wxd99431bbff8305a0
+        app-secret: 60f78681d063590a469f1b297feff3c4
+      filterProcessesUrl: /social
+      connectionTablePrefix: gb_
+
+    browser:
+      signUpUrl: /demo-signUp.html
+      jwtExpireTime: 6000 #jwt 失效时间
+      jwtRefreshTime: 12000 #刷新token失效时间,默认一周
+    code:
+      image:
+        expireIn: 120
+      sms:
+        #短信验证码的长度
+        length: 6
+        #失效时间
+        expireIn: 60
+        #发送短信的签名
+        currentCompanyName: 北京凡生易美科技有限公司
+
+
+---
+spring:
+  rabbitmq:
+    username: guest
+    password: guest
+    host: localhost
+    port: 5672
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37

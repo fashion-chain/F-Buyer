@@ -11,6 +11,13 @@ public class SortStringResolver implements SortResolver, Serializable {
     private String sortString;
     private List<Sort.Order> orders;
 
+<<<<<<< HEAD
+=======
+    public SortStringResolver(Sort.Direction direction, String fieldName) {
+        this(direction == Sort.Direction.ASC ? fieldName : String.format("-%s", fieldName));
+    }
+
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
     public SortStringResolver(String sortString) {  // a string like "-price,createDate"
         this.sortString = sortString;
         this.orders = new ArrayList<>();

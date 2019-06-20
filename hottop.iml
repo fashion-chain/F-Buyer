@@ -52,6 +52,11 @@
     <orderEntry type="library" name="Maven: org.springframework.data:spring-data-jpa:2.1.4.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.data:spring-data-commons:2.1.4.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-orm:5.1.4.RELEASE" level="project" />
+<<<<<<< HEAD
+=======
+    <orderEntry type="library" name="Maven: org.springframework:spring-tx:5.1.4.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
     <orderEntry type="library" name="Maven: org.springframework:spring-aspects:5.1.4.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-configuration-processor:2.1.2.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:2.1.2.RELEASE" level="project" />
@@ -90,6 +95,7 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-jcl:5.1.4.RELEASE" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-test:5.1.4.RELEASE" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.xmlunit:xmlunit-core:2.6.2" level="project" />
+<<<<<<< HEAD
     <orderEntry type="library" name="Maven: org.springframework.data:spring-data-redis:2.1.3.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.data:spring-data-keyvalue:2.1.4.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-tx:5.1.4.RELEASE" level="project" />
@@ -107,5 +113,7 @@
     <orderEntry type="library" name="Maven: com.sun.xml.bind:jaxb-impl:2.1" level="project" />
     <orderEntry type="library" name="Maven: javax.activation:activation:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: com.aliyun:aliyun-java-sdk-dysmsapi:1.1.0" level="project" />
+=======
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
   </component>
 </module>

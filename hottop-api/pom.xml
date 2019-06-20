@@ -69,6 +69,10 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.1.2.RELEASE</version>
                 <configuration>
+<<<<<<< HEAD
+=======
+                    <includeSystemScope>true</includeSystemScope>
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
                     <fork>true</fork>
                     <mainClass>${start-class}</mainClass>
                     <layout>JAR</layout>

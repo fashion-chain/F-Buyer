@@ -1,11 +1,18 @@
 package com.hottop.brand;
 
+<<<<<<< HEAD
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.hottop.core.config.BaseConfiguration;
 import com.hottop.core.model.commerce.CommerceBrand;
+=======
+import com.google.gson.*;
+import com.hottop.core.config.BaseConfiguration;
+import com.hottop.core.model.commerce.CommerceBrand;
+import com.hottop.core.model.zpoj.bean.Image;
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 import com.hottop.core.model.zpoj.commerce.bean.CommerceBrandDto;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +25,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
+<<<<<<< HEAD
+=======
+import org.springframework.test.web.servlet.ResultActions;
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -43,11 +54,27 @@ public class TestBrandController {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
     }
 
+<<<<<<< HEAD
+=======
+    private String toPrettyFormat(String json) {
+        JsonParser jsonParser = new JsonParser();
+        JsonObject jsonObject = jsonParser.parse(json).getAsJsonObject();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(jsonObject);
+    }
+
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
     /**
      * 测试brand 新增方法
      *
      * @throws Exception
+<<<<<<< HEAD
      */
+=======
+     * V1.0 弃用
+     */
+    @Deprecated
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
     @Test
     public void testBrandAdd() throws Exception {
         String uploadFilePath = "/Users/lq/Downloads/d.jpg";
@@ -69,7 +96,13 @@ public class TestBrandController {
      * 测试brand 更新
      *
      * @throws Exception
+<<<<<<< HEAD
      */
+=======
+     * V1.0 弃用
+     */
+    @Deprecated
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
     @Test
     public void testBrandUpdate() throws Exception {
         String uploadFilePath = "/Users/lq/Downloads/b.jpg";
@@ -129,11 +162,76 @@ public class TestBrandController {
         System.out.println(toPrettyFormat(result));
     }
 
+<<<<<<< HEAD
     public String toPrettyFormat(String json) {
         JsonParser jsonParser = new JsonParser();
         JsonObject jsonObject = jsonParser.parse(json).getAsJsonObject();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         return gson.toJson(jsonObject);
+=======
+    /**
+     * 测试文件上传
+     * 图片上传
+     * v2.0
+     */
+    @Test
+    public void testImageUplod() throws Exception {
+        File file = new File("/Users/lq/Downloads/d.jpg");
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", file.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(file));
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.multipart("/imageUpload")
+                    .file(mockMultipartFile)
+                    .param("to", "PRODUCT"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        System.out.println(result.getResponse().getContentAsString());
+        //{"code":0,"data":{"url":"product/d30407f00e9340709831f9dc93e32100.jpg","uuid":"d30407f00e9340709831f9dc93e32100","format":"jpg","width":1024,"height":640,"mediaType":"image"},"message":null,"error":null,"flag":null,"flagPre":null,"success":true}
+    }
+
+    // 测试添加商标
+    @Test
+    public void testAddCommerceBrand() throws Exception {
+        String imgUploadResultJsonStr = "{\n" +
+                "    \"code\": 0,\n" +
+                "    \"data\": {\n" +
+                "        \"width\": 1680,\n" +
+                "        \"height\": 1050,\n" +
+                "        \"type\": \"image\",\n" +
+                "        \"url\": \"product/4a367862047d4c6abf5b20a1b8a1e5d4.jpg\",\n" +
+                "        \"uuid\": \"4a367862047d4c6abf5b20a1b8a1e5d4\",\n" +
+                "        \"format\": \"jpg\"\n" +
+                "    }\n" +
+                "}";
+        JsonElement resultJson = new JsonParser().parse(imgUploadResultJsonStr);
+        JsonObject imgJson = resultJson.getAsJsonObject().getAsJsonObject("data");
+
+        CommerceBrandDto commerceBrand = new CommerceBrandDto();
+        commerceBrand.setDescription("品牌描述1");
+        commerceBrand.setCountry("品牌国家1");
+        commerceBrand.setAvatar(imgJson.toString());
+        commerceBrand.setName("品牌名1");
+        System.out.println("上传json str：" + BaseConfiguration.generalGson().toJson(commerceBrand));
+        /*MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/brand/").content(BaseConfiguration.generalGson().toJson(commerceBrand))
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        System.out.println("结果：" + result.getResponse().getContentAsString());*/
+    }
+
+    //测试更新商标
+    @Test
+    public void testUpdateCommerceBrand() throws Exception {
+        //只更新品牌描述
+        CommerceBrandDto commerceBrandDto = new CommerceBrandDto();
+        commerceBrandDto.setDescription("品牌描述2");
+        String putJsonStr = BaseConfiguration.generalGson().toJson(commerceBrandDto);
+        System.out.println("上传jsonStr：" + putJsonStr);
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/brand/1")
+                .content(putJsonStr)
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        System.out.println("结果：" + result.getResponse().getContentAsString());
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
     }
 
 

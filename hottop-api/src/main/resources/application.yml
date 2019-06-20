@@ -1,7 +1,14 @@
 server:
+<<<<<<< HEAD
   servlet:
     context-path: /100
   port: 8000
+=======
+  port: 8000
+logging:
+  level:
+    com.hottop: debug
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 
 ---
 spring:
@@ -22,4 +29,39 @@ spring:
     multipart:
       max-file-size: 500MB
       max-request-size: 500MB
+<<<<<<< HEAD
       enabled: true
+=======
+      enabled: true
+
+ht:
+  security:
+    social:
+      weixin:
+        app-id: wxd99431bbff8305a0
+        app-secret: 60f78681d063590a469f1b297feff3c4
+      filterProcessesUrl: /social
+      connectionTablePrefix: gb_
+
+    browser:
+      signUpUrl: /demo-signUp.html
+      #单位是秒
+      jwtExpireTime: 6000
+      jwtRefreshTime: 12000
+    code:
+      sms:
+        #短信验证码的长度
+        length: 6
+        #失效时间
+        expireIn: 60
+        #发送短信的签名
+        currentCompanyName: 北京凡生易美科技有限公司
+        #是否启动aliSms
+        isAliSmsOpen: false
+
+---
+ht:
+  snowflake:
+    workerId: 0
+    datacenterId: 0
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37

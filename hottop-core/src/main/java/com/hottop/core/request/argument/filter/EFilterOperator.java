@@ -11,7 +11,14 @@ public enum EFilterOperator {
     notEqual("!:"),
     in("in"),
     notIn("!in"),
+<<<<<<< HEAD
     like("like");
+=======
+    like("like"),
+    unlike("unlike"),
+    isnull("isnull"),
+    notnull("notnull");
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 
     private String operator;
 
@@ -28,6 +35,13 @@ public enum EFilterOperator {
         throw new IllegalArgumentException(String.format("operator: %s not found", operatorString));
     }
 
+<<<<<<< HEAD
+=======
+    public String operator() {
+        return this.operator;
+    }
+
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
     @Override
     public String toString() {
         return this.operator;

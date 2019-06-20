@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 @Data
 @Entity
 public class Tag extends EntityBase {
+<<<<<<< HEAD
 
     @Column(columnDefinition = "VARCHAR(127) NOT NULL UNIQUE COMMENT '标签名' ")
     private String tag;
@@ -21,4 +22,11 @@ public class Tag extends EntityBase {
         channel,
         forum
     }
+=======
+    @Column(columnDefinition = "INT(11) NOT NULL COMMENT '社区ID' ")
+    private Long communityId;
+
+    @Column(columnDefinition = "VARCHAR(127) NOT NULL UNIQUE COMMENT '标签名' ")
+    private String tag;
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 }

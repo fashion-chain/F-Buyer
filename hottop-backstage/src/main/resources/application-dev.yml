@@ -31,6 +31,7 @@ spring:
     port: 6379
     password:
     timeout: 10000ms
+<<<<<<< HEAD
 
 ---
 redis:
@@ -41,3 +42,15 @@ redis:
   hostname: 127.0.0.1
   port: 6379
   password: root
+=======
+#
+#---
+#redis:
+#  #最大空闲数
+#  maxIdle: 30
+#  maxTotal: 50
+#  maxWaitMillis: 2000
+#  hostname: 127.0.0.1
+#  port: 6379
+#  password: root
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37

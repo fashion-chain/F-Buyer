@@ -1,5 +1,10 @@
 package com.hottop.core.model.zpoj;
 
+<<<<<<< HEAD
+=======
+import com.hottop.core.feature.type.IFeatureType;
+
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 import javax.persistence.*;
 import java.util.Date;
 
@@ -52,4 +57,29 @@ public abstract class EntityBase {
     public void setDeleteTime(Date deleteTime) {
         this.deleteTime = deleteTime;
     }
+<<<<<<< HEAD
+=======
+
+    public boolean isDeleted() {
+        return this.deleteTime != null;
+    }
+
+    private void featureType() throws Exception {
+        for (Class<?> inter: this.getClass().getInterfaces()) {
+            if (IFeatureType.class.isAssignableFrom(inter)) {
+                ((IFeatureType)this).setTypeMeta(((IFeatureType)this).specificTypeMeta());
+            }
+        }
+    }
+
+    @PrePersist
+    public void prePersist() throws Exception {
+        featureType();
+    }
+
+    @PreUpdate
+    public void preUpdate() throws Exception {
+        featureType();
+    }
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 }

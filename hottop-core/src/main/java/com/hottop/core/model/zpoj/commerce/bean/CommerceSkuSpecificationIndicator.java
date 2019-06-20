@@ -15,6 +15,13 @@ public class CommerceSkuSpecificationIndicator extends HashMap<String, String> i
         this.specifications = specifications;
     }
 
+<<<<<<< HEAD
+=======
+    //添加空构造，不然解析不了
+    public CommerceSkuSpecificationIndicator() {
+    }
+
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
     public boolean valid() {
         boolean valid = false;
         for (Entry<String, String> entry : entrySet()) {
@@ -43,6 +50,10 @@ public class CommerceSkuSpecificationIndicator extends HashMap<String, String> i
         for (CommerceSpecificationDto specificationDto: specifications) {
             keys.add(get(specificationDto.getName()));
         }
+<<<<<<< HEAD
         return StringUtils.join(keys, BaseConstant.Common.SKU_KEY_SPLITTER);
+=======
+        return String.join(BaseConstant.Common.SKU_KEY_SPLITTER, keys);
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
     }
 }

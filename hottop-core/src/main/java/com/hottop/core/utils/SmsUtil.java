@@ -8,8 +8,16 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.exceptions.ServerException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
+<<<<<<< HEAD
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+=======
+import com.hottop.core.security.validate.code.sms.ESmsCodeType;
+import com.hottop.core.security.validate.code.sms.SmsCodeSender;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 
 import java.util.Random;
 
@@ -19,7 +27,11 @@ import java.util.Random;
  */
 public class SmsUtil {
 
+<<<<<<< HEAD
     static Logger logger = LoggerFactory.getLogger(SmsUtil.class);
+=======
+    private static Logger logger = LoggerFactory.getLogger(SmsUtil.class);
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 
     /** ali 短信服务 accessKeyId 固定值 */
     private static final String accessKeyId = "LTAIXyJXzfVdLwfL";
@@ -136,6 +148,7 @@ public class SmsUtil {
 
     }
 
+<<<<<<< HEAD
     /**
      * 发送验证码的类型
      */
@@ -147,5 +160,9 @@ public class SmsUtil {
             this.smsCodeType = smsCodeType;
         }
     }
+=======
+
+
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 }
 

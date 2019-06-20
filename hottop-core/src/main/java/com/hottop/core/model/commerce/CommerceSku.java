@@ -1,8 +1,15 @@
 package com.hottop.core.model.commerce;
 
 import com.hottop.core.model.zpoj.EntityBase;
+<<<<<<< HEAD
 import com.hottop.core.model.zpoj.commerce.bean.CommerceSkuSpecificationIndicator;
 import com.hottop.core.model.zpoj.converter.CommerceSkuSpecificationIndicatorConverter;
+=======
+import com.hottop.core.model.zpoj.bean.Image;
+import com.hottop.core.model.zpoj.commerce.bean.CommerceSkuSpecificationIndicator;
+import com.hottop.core.model.zpoj.converter.CommerceSkuSpecificationIndicatorConverter;
+import com.hottop.core.model.zpoj.converter.MediaConverter;
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -22,6 +29,12 @@ public class CommerceSku extends EntityBase {
     @Column(columnDefinition = "INT(11) NOT NULL COMMENT '市场价（单位：分）' ")
     private Long marketPrice;
 
+<<<<<<< HEAD
+=======
+    @Column(columnDefinition = "INT(11) COMMENT '成本价 (单位分) '")
+    private Long productPrice;
+
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
     @Column(columnDefinition = "INT(11) NOT NULL COMMENT '库存' ")
     private Integer inventory;
 
@@ -34,4 +47,14 @@ public class CommerceSku extends EntityBase {
     @Column(columnDefinition = "JSON COMMENT '商品SKU信息' ")
     @Convert(converter = CommerceSkuSpecificationIndicatorConverter.class)
     private CommerceSkuSpecificationIndicator indicators;
+<<<<<<< HEAD
+=======
+
+    //新增字段image，sku的图片
+    @Column(columnDefinition = "JSON COMMENT 'sku图'")
+    @Convert(converter = MediaConverter.class)
+    private Image subImg;
+
+
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 }

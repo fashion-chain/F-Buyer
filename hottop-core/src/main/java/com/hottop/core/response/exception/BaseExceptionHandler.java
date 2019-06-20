@@ -7,7 +7,13 @@ import com.hottop.core.request.argument.view.exception.ViewExistsException;
 import com.hottop.core.request.argument.view.exception.ViewNotFoundException;
 import com.hottop.core.response.EResponseResult;
 import com.hottop.core.response.Response;
+<<<<<<< HEAD
 import com.hottop.core.utils.CommonUtil;
+=======
+import com.hottop.core.security.validate.code.ValidateCodeException;
+import com.hottop.core.utils.CommonUtil;
+import javassist.NotFoundException;
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
@@ -16,6 +22,10 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+<<<<<<< HEAD
+=======
+import org.springframework.security.web.authentication.www.NonceExpiredException;
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,6 +44,33 @@ public class BaseExceptionHandler {
         ex.printStackTrace();
         return new ResponseEntity<Response>(Response.ResponseBuilder
                 .result(EResponseResult.ERROR_INTERVAL)
+<<<<<<< HEAD
+=======
+                .simpleMessage(ex.getMessage())
+                //.error(CommonUtil.printStackTraceElements(ex.getStackTrace()))
+                .create(), HttpStatus.OK);
+    }
+
+
+    //validate ExceptionHandler 处理验证码异常
+    @ExceptionHandler({ValidateCodeException.class})
+    private ResponseEntity<Response> handleHttpRequestMethodNotSupportedException(ValidateCodeException ex) {
+        ex.printStackTrace();
+        return new ResponseEntity<Response>(Response.ResponseBuilder
+                .result(EResponseResult.ERROR_INTERVAL)
+                .message(ex.getMessage())
+                .error(CommonUtil.printStackTraceElements(ex.getStackTrace()))
+                .create(), HttpStatus.OK);
+    }
+
+    //NonceExpiredException 处理token失效异常
+    @ExceptionHandler({NonceExpiredException.class})
+    private ResponseEntity<Response> handleHttpRequestMethodNotSupportedException(NonceExpiredException ex) {
+        ex.printStackTrace();
+        return new ResponseEntity<Response>(Response.ResponseBuilder
+                .result(EResponseResult.ERROR_INTERVAL)
+                .message(ex.getMessage())
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
                 .error(CommonUtil.printStackTraceElements(ex.getStackTrace()))
                 .create(), HttpStatus.OK);
     }
@@ -80,6 +117,20 @@ public class BaseExceptionHandler {
                 HttpStatus.OK);
     }
 
+<<<<<<< HEAD
+=======
+    @ExceptionHandler({NotFoundException.class})
+    private ResponseEntity<Response> handleNotFoundException(Exception ex) {
+        ex.printStackTrace();
+        return new ResponseEntity<Response>(Response.ResponseBuilder
+                .result(EResponseResult.ERROR_INTERVAL_NOT_FOUND)
+                .message(ex.getMessage())
+                .error(CommonUtil.printStackTraceElements(ex.getStackTrace()))
+                .create(),
+                HttpStatus.OK);
+    }
+
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
     @ExceptionHandler({FieldExistsException.class, FieldNotFoundException.class, ViewNotFoundException.class, ViewExistsException.class})
     private ResponseEntity<Response> handleViewExceptions(Exception ex) {
         ex.printStackTrace();

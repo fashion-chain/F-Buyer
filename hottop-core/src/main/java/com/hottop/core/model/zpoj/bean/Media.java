@@ -5,6 +5,10 @@ import lombok.Data;
 import java.io.Serializable;
 
 public abstract class Media implements Serializable {
+<<<<<<< HEAD
+=======
+
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
     private EMediaType type;
 
     private String url;
@@ -34,6 +38,21 @@ public abstract class Media implements Serializable {
         return format;
     }
 
+<<<<<<< HEAD
+=======
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public boolean isImage() {
+        return this.type == EMediaType.image;
+    }
+
+    public boolean isVideo() {
+        return this.type == EMediaType.video;
+    }
+
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
     public enum EMediaType {
         image, video
     }

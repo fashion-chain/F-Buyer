@@ -2,7 +2,11 @@ spring:
   datasource:
     username: root
     password: root
+<<<<<<< HEAD
     url: jdbc:mysql://localhost:3306/gbuyer?Unicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&useSSL=false
+=======
+    url: jdbc:mysql://47.94.208.194:3306/gbuyer?Unicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&useSSL=false
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
     driver-class-name: com.mysql.jdbc.Driver
     dbcp2:
       initial-size: 5

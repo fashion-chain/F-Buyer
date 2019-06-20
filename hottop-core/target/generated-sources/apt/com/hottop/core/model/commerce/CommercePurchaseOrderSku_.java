@@ -9,6 +9,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 public abstract class CommercePurchaseOrderSku_ extends com.hottop.core.model.zpoj.EntityBase_ {
 
 	public static volatile SingularAttribute<CommercePurchaseOrderSku, Long> amount;
+<<<<<<< HEAD
 	public static volatile SingularAttribute<CommercePurchaseOrderSku, Long> payAmount;
 	public static volatile SingularAttribute<CommercePurchaseOrderSku, Integer> quantity;
 	public static volatile SingularAttribute<CommercePurchaseOrderSku, Long> purchaseOrderId;
@@ -22,6 +23,29 @@ public abstract class CommercePurchaseOrderSku_ extends com.hottop.core.model.zp
 	public static final String PURCHASE_ORDER_ID = "purchaseOrderId";
 	public static final String SPU_ID = "spuId";
 	public static final String USER_ID = "userId";
+=======
+	public static volatile SingularAttribute<CommercePurchaseOrderSku, Long> agentId;
+	public static volatile SingularAttribute<CommercePurchaseOrderSku, Long> payAmount;
+	public static volatile SingularAttribute<CommercePurchaseOrderSku, Integer> quantity;
+	public static volatile SingularAttribute<CommercePurchaseOrderSku, Long> purchaseOrderId;
+	public static volatile SingularAttribute<CommercePurchaseOrderSku, Long> distributorId;
+	public static volatile SingularAttribute<CommercePurchaseOrderSku, Long> spuId;
+	public static volatile SingularAttribute<CommercePurchaseOrderSku, Long> agentRebate;
+	public static volatile SingularAttribute<CommercePurchaseOrderSku, Long> userId;
+	public static volatile SingularAttribute<CommercePurchaseOrderSku, Long> distributorRebate;
+	public static volatile SingularAttribute<CommercePurchaseOrderSku, Long> skuId;
+
+	public static final String AMOUNT = "amount";
+	public static final String AGENT_ID = "agentId";
+	public static final String PAY_AMOUNT = "payAmount";
+	public static final String QUANTITY = "quantity";
+	public static final String PURCHASE_ORDER_ID = "purchaseOrderId";
+	public static final String DISTRIBUTOR_ID = "distributorId";
+	public static final String SPU_ID = "spuId";
+	public static final String AGENT_REBATE = "agentRebate";
+	public static final String USER_ID = "userId";
+	public static final String DISTRIBUTOR_REBATE = "distributorRebate";
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 	public static final String SKU_ID = "skuId";
 
 }

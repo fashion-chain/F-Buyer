@@ -4,6 +4,7 @@ import com.hottop.core.model.zpoj.EntityBase;
 import lombok.Data;
 
 import javax.persistence.*;
+<<<<<<< HEAD
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +13,17 @@ import java.util.List;
 @Data
 @Entity
 public class User extends EntityBase {
+=======
+import javax.validation.constraints.Email;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
+@NamedEntityGraph(name = "User.modules",attributeNodes = {@NamedAttributeNode("modules")})
+@Data
+@Entity
+public class User extends EntityBase implements Serializable {
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 
     @Column(columnDefinition = "varchar(100) DEFAULT '' COMMENT '密码'")
     private String password;
@@ -26,6 +38,10 @@ public class User extends EntityBase {
     private String tel;
 
     @Column(columnDefinition = "varchar(100) DEFAULT '' COMMENT '邮箱'")
+<<<<<<< HEAD
+=======
+    @Email(message = "邮箱格式错误")
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
     private String email;
 
     @Column(columnDefinition = "varchar(200) DEFAULT '' COMMENT '备注'")
@@ -35,6 +51,7 @@ public class User extends EntityBase {
     @Temporal(TemporalType.TIMESTAMP)
     private Date loginLastTime;
 
+<<<<<<< HEAD
     @Column(columnDefinition = "bigint DEFAULT NULL COMMENT '创建者id'")
     private Long creatorId;
 
@@ -44,6 +61,16 @@ public class User extends EntityBase {
     @OneToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinTable(name = "gb_user_role", joinColumns = @JoinColumn(name = "gb_user_id"), inverseJoinColumns = @JoinColumn(name = "gb_role_id"))
     private List<Role> roles;
+=======
+    @ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @JoinTable(name = "gb_user_module", joinColumns = @JoinColumn(name = "gb_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "gb_module_id"))
+    private List<Module> modules;
+
+    //用户对应的application id
+    @Column(columnDefinition = "INT(11) COMMENT '后台应用appId'")
+    private Long appId;
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 
     /**
      * 空构造器

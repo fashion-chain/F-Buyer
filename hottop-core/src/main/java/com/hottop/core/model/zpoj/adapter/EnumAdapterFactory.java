@@ -16,10 +16,23 @@ public class EnumAdapterFactory implements TypeAdapterFactory {
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> typeToken) {
         Class<? super T> rawType = typeToken.getRawType();
+<<<<<<< HEAD
         return rawType.isEnum() ? new EnumAdapter(rawType) : null;
     }
 
     public static class EnumAdapter<T extends Enum<T>> extends TypeAdapter<T> {
+=======
+        if (!Enum.class.isAssignableFrom(rawType) || rawType == Enum.class) {
+            return null;
+        }
+        if (!rawType.isEnum()) {
+            rawType = rawType.getSuperclass(); // handle anonymous subclasses
+        }
+        return new EnumAdapter(rawType);
+    }
+
+    private static class EnumAdapter<T extends Enum<T>> extends TypeAdapter<T> {
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
 
         private final Class<T> enumClass;
 
@@ -51,3 +64,7 @@ public class EnumAdapterFactory implements TypeAdapterFactory {
         }
     }
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37

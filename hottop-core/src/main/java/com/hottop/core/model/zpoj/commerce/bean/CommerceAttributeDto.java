@@ -12,7 +12,10 @@ import java.util.ArrayList;
 public class CommerceAttributeDto implements Serializable {
     private String name;
 
+<<<<<<< HEAD
     private EAttributeType type;
 
+=======
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
     private ArrayList<String> recommendationValues;
 }

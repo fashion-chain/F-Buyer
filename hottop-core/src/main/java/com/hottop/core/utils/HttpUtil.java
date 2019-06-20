@@ -31,7 +31,11 @@ public class HttpUtil {
             conn.setDoInput(true);
             conn.setUseCaches(false);
             conn.setRequestMethod(requestMethod);// 设置请求方式（GET/POST）
+<<<<<<< HEAD
             conn.setRequestProperty("content-type", "application/x-www-form-urlencoded");
+=======
+            conn.setRequestProperty("content-type", "com.hottop.application/x-www-form-urlencoded");
+>>>>>>> b99db5c79492b574b2ca3021b6e903a9c00b3c37
             if (null != outputStr) {  // 当outputStr不为null时向输出流写数据
                 OutputStream outputStream = conn.getOutputStream();
                 outputStream.write(outputStr.getBytes("UTF-8"));
